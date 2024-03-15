@@ -32,8 +32,8 @@ class LoginRegisterController extends Controller
         $data['user'] = $user;
 
         $response = [
-            'status' => 'Успешно!',
-            'message' => 'Пользователь успешно создан.',
+            'status' => __('messages.status_success'),
+            'message' => __('messages.user_created'),
             'data' => $data,
         ];
 
@@ -57,8 +57,8 @@ class LoginRegisterController extends Controller
         // Check password
         if (!$user || !Hash::check($request->validated('password'), $user->password)) {
             return response()->json([
-                'status' => 'failed',
-                'message' => 'Invalid credentials'
+                'status' => __('messages.status_failed'),
+                'message' => __('messages.invalid_credentials')
             ], 401);
         }
 
@@ -66,8 +66,8 @@ class LoginRegisterController extends Controller
         $data['user'] = $user;
 
         $response = [
-            'status' => 'success',
-            'message' => 'User is logged in successfully.',
+            'status' => __('messages.status_success'),
+            'message' => __('messages.login_success'),
             'data' => $data,
         ];
 
@@ -83,8 +83,8 @@ class LoginRegisterController extends Controller
     {
         auth()->user()->tokens()->delete();
         return response()->json([
-            'status' => 'success',
-            'message' => 'User is logged out successfully'
+            'status' => __('messages.status_success'),
+            'message' => __('messages.logout_success')
         ], 200);
     }
 }

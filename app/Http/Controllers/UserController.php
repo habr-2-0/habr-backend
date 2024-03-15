@@ -73,7 +73,7 @@ class UserController extends Controller
 
         if ($user === null) {
             return response()->json([
-                'message' => 'User not found!'
+                'message' => __('messages.user_not_found')
             ], 400);
         }
         return new UserResource($user);
@@ -102,7 +102,7 @@ class UserController extends Controller
         $service->update(UserDTO::fromArray($validated), $user);
 
         return response()->json([
-            'message' => 'User updated successfully!'
+            'message' => __('messages.user_updated')
         ], Response::HTTP_OK);
     }
 
@@ -118,12 +118,12 @@ class UserController extends Controller
 
         if ($user === null) {
             $result = response()->json([
-                'message' => 'This record does not exist.'
+                'message' => __('messages.record_not_found')
             ], 400);
         } else {
             User::query()->find($id)->delete();
             $result = response()->json([
-                'message' => 'Record deletion was successful.'
+                'message' => __('messages.record_deleted')
             ]);
         }
 

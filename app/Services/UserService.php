@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Contacts\IUserRepository;
 use App\DTO\UserDTO;
-use App\Exceptions\BusinnesException;
+use App\Exceptions\BusinessException;
 use App\Models\User;
 use App\Repositories\UserRepository;
 
@@ -21,7 +21,7 @@ class UserService
     {
         $userWithEmail = $this->repository->getUserByEmail($userDTO->getEmail());
         if ($userWithEmail !== null) {
-            throw new BusinnesException('The user with this email already exists.');
+            throw new BusinessException(__('messages.user_email_already_exists'));
         }
 
         return $this->repository->createUser($userDTO);
@@ -32,7 +32,7 @@ class UserService
         $userWithEmail = $this->repository->getUserByEmail($userDTO->getEmail());
 
         if ($userWithEmail !== null) {
-            throw new BusinnesException('The user with this email already exists.');
+            throw new BusinessException(__('messages.user_email_already_exists'));
         } else if ($user->email !== $userDTO->getEmail()) {
             return $this->repository->updateUser($userDTO, $user);
         }
