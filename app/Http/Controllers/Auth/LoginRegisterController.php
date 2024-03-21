@@ -6,10 +6,9 @@ use App\DTO\UserDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Services\UserService;
 use App\Models\User;
-use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class LoginRegisterController extends Controller

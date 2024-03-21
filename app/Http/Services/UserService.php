@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Http\Services;
 
-use App\Contacts\IUserRepository;
+use App\Contracts\IUserRepository;
 use App\DTO\UserDTO;
 use App\Exceptions\BusinessException;
 use App\Models\User;

@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Contacts\IUserRepository;
+use App\Contracts\IUserRepository;
 use App\DTO\UserDTO;
 use App\Models\User;
 

@@ -30,7 +30,7 @@ class CommentController extends Controller
      */
     public function index():JsonResponse
     {
-        $comments = Comment::all();
+        $comments = $this->commentRepository->getAllComments();
 
 
         return response()->json(
@@ -44,7 +44,9 @@ class CommentController extends Controller
     public function store(CommentRequest $request, CreateCommentService $service): CommentResource
     {
         $validated =$request->validated();
+
         $comment =$service->execute(CommentDTO::fromArray($validated));
+
         return new CommentResource($comment);
     }
 
@@ -55,7 +57,7 @@ class CommentController extends Controller
      */
     public function show(int $commentId) : CommentResource|JsonResponse
     {
-        $comment = Comment::query()->find($commentId);
+        $comment = $this->commentRepository->getCommentById($commentId);
 
         if (!$comment) {
             return response()->json([
@@ -75,7 +77,7 @@ class CommentController extends Controller
      */
     public function update(CommentRequest $request,  $commentId): CommentResource|JsonResponse
     {
-        $comment = Comment::query()->find($commentId);
+        $comment = $this->commentRepository->getCommentById($commentId);
 
         if (!$comment) {
             return response()->json([
@@ -84,13 +86,13 @@ class CommentController extends Controller
         }
 
         $validated = $request->validated();
+        $commentDTO = CommentDTO::fromArray($validated);
 
-        $comment->update($validated);
-        $comment->save();
+        $updatedComment = $this->commentRepository->updateComment($commentDTO, $comment);
 
         return response()->json([
             'message' => 'Comment successfully updated',
-            'comment' => $comment
+            'comment' => $updatedComment
         ], 200);
     }
 
@@ -99,14 +101,15 @@ class CommentController extends Controller
      */
     public function destroy(int $commentId): JsonResponse
     {
-            $comment = Comment::query()->find($commentId);
+        $comment = $this->commentRepository->getCommentById($commentId);
 
-            if ($comment === null){
-                return response()->json([
-                    'message' => 'Comment not found'
-                ]);
-            }
-            $comment->delete();
+        if ($comment === null){
+            return response()->json([
+                'message' => 'Comment not found'
+            ]);
+        }
+
+        $this->commentRepository->deleteComment($commentId);
 
         return response()->json([
             'message' => 'Comment deleted'
