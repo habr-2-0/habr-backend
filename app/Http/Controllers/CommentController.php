@@ -7,7 +7,6 @@ use App\DTO\CommentDTO;
 use App\Http\Requests\CommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Http\Services\CreateCommentService;
-use App\Models\Comment;
 use App\Repositories\CommentRepository;
 use Illuminate\Http\JsonResponse;
 
@@ -20,9 +19,9 @@ class CommentController extends Controller
      */
     private ICommentRepository $commentRepository;
 
-    public function __construct()
+    public function __construct(ICommentRepository $commentRepository)
     {
-        $this->commentRepository = new CommentRepository();
+        $this->commentRepository = $commentRepository;
     }
 
     /**
@@ -64,12 +63,10 @@ class CommentController extends Controller
                 'message' => 'Comment not found'
             ], 404);
         }
-        return response()->json($comment);
+        //return response()->json($comment);
+        return new CommentResource($comment);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
 
 
     /**

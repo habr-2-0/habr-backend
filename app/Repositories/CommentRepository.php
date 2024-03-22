@@ -42,9 +42,7 @@ class CommentRepository implements ICommentRepository
     public function deleteComment(int $id): void
     {
         $comment = Comment::query()->find($id);
-        if ($comment !== null) {
-            $comment->delete();
-        }
+        $comment?->delete();
     }
 
 
