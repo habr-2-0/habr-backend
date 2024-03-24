@@ -13,9 +13,13 @@ class PostRepository implements IPostRepository
         return Post::all()->toArray();
     }
 
+
     public function getPostById(int $postId): ?Post
     {
-        return Post::find($postId);
+        /** @var Post|null $post */
+        $post = Post::query()->find($postId);
+
+        return $post;
     }
     public function createPost(PostDTO $postDTO): Post
     {
@@ -40,10 +44,8 @@ class PostRepository implements IPostRepository
 
     public function deletePost(int $id): void
     {
-        $post = Post::find($id);
-        if ($post !== null) {
-            $post->delete();
-        }
+        $post = Post::query()->find($id);
+        $post?->delete();
     }
     public function getAllPostComments(int $postId): array
     {

@@ -57,7 +57,7 @@ class PostDTO
 
     public static function fromArray(array $data): self
     {
-        return new self(
+        return new static(
             user_id: $data['user_id'],
             title: $data['title'],
             description: $data['description'],
