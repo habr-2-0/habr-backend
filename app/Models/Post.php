@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $description
  * @property string $status
  * @property string $post_image
+ * @property string $tags
+ * @property int $views
  * @property string $created_at
  * @property string $updated_at
  */
@@ -33,7 +35,9 @@ class Post extends Model
         'title',
         'description',
         'status',
-//        'post_image', пост может быть и без картинки
+        'post_image',
+        'tags',
+        'views',
     ];
 
     /**

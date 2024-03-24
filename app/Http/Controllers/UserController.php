@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\DTO\UserDTO;
+use App\Exceptions\BusinessException;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
+use App\Http\Services\UserService;
 use App\Models\User;
-use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Js;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
@@ -17,7 +19,7 @@ class UserController extends Controller
      * Display a listing of the resource.
      * @return JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         $users = User::simplePaginate(15);
 
@@ -79,5 +81,27 @@ class UserController extends Controller
     public function destroy(UserService $service, int $id): User|JsonResponse
     {
         return $service->delete($id);
+    }
+
+    /**
+     * @param int $user_id
+     * @return JsonResponse|AnonymousResourceCollection
+     */
+    public function getUserPosts(
+        UserService $service,
+        int         $user_id
+    ): JsonResponse|AnonymousResourceCollection
+    {
+        return $service->getPosts($user_id);
+    }
+
+
+    public function getUserPostById(
+        UserService $service,
+        int         $user_id,
+        int         $post_id,
+    ): JsonResponse|PostResource
+    {
+        return $service->getPostById($user_id, $post_id);
     }
 }

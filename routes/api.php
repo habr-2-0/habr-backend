@@ -36,6 +36,10 @@ Route::middleware(Localization::class)->group(callback: function () {
             Route::delete('/users/{id}', 'destroy');
         });
 
+        //    User Posts Routes
+        Route::get('users/{user_id}/posts', [UserController::class, 'getUserPosts']);
+        Route::get('users/{user_id}/posts/{post_id}', [UserController::class, 'getUserPostById']);
+
         //    comments crud
         Route::get('comments', [CommentController::class, 'index']);
         Route::get('comments/{id}', [CommentController::class, 'show']);
@@ -50,7 +54,7 @@ Route::middleware(Localization::class)->group(callback: function () {
         Route::post('posts', [PostController::class, 'store']);
         Route::put('posts/{id}', [PostController::class, 'update']);
 
-        Route::get('posts/{id}/comments', [PostController::class, 'getAllPostComments']);
+        Route::get('posts/{id}/comments', [PostController::class, 'getPostComments']);
     });
 
 });

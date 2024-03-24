@@ -6,25 +6,20 @@ use App\Contracts\IPostRepository;
 use App\DTO\PostDTO;
 use App\Http\Requests\PostCommentsRequest;
 use App\Http\Requests\PostRequest;
-use App\Http\Resources\PostCommentsResource;
 use App\Http\Resources\PostResource;
-use App\Http\Services\CreatePostService;
+use App\Http\Services\PostService;
+use App\Models\Post;
 use Illuminate\Http\JsonResponse;
 
 class PostController extends Controller
 {
-    private IPostRepository $postRepository;
-
-    public function __construct(IPostRepository $postRepository)
-    {
-        $this->postRepository = $postRepository;
-    }
     /**
      * Display a listing of the resource.
+     * @return JsonResponse
      */
     public function index(): JsonResponse
     {
-        $posts = $this->postRepository->getAllPosts();
+        $posts = Post::simplePaginate(15);
 
         return response()->json([
             'data' => $posts
@@ -35,11 +30,11 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(PostRequest $request,CreatePostService $service): PostResource
+    public function store(PostRequest $request, PostService $service): PostResource
     {
         $validated = $request->validated();
 
-        $post = $service->execute(PostDTO::fromArray($validated));
+        $post = $service->create(PostDTO::fromArray($validated));
 
         return new PostResource($post);
     }
@@ -61,11 +56,10 @@ class PostController extends Controller
     }
 
 
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(PostRequest $request,  $postId): PostResource|JsonResponse
+    public function update(PostRequest $request, $postId): PostResource|JsonResponse
     {
         $post = $this->postRepository->getPostById($postId);
 
@@ -93,7 +87,7 @@ class PostController extends Controller
     {
         $post = $this->postRepository->getPostById($postId);
 
-        if ($post === null){
+        if ($post === null) {
             return response()->json([
                 'message' => __('messages.post_not_found')
             ]);
@@ -106,7 +100,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function getAllPostComments(PostCommentsRequest $request): PostCommentsResource
+    public function getPostComments(PostCommentsRequest $request)
     {
         $validated = $request->validated();
         $postId = $validated['post_id'];

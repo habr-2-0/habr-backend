@@ -5,9 +5,11 @@ namespace App\Http\Services;
 use App\Contracts\IUserRepository;
 use App\DTO\UserDTO;
 use App\Exceptions\BusinessException;
+use App\Http\Resources\PostResource;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserService
 {
@@ -45,7 +47,7 @@ class UserService
         $userWithId = $this->repository->getUserById($id);
 
         if ($userWithId === null) {
-            throw new BusinessException(400, __('messages.user_not_found'));
+            throw new BusinessException(__('messages.user_not_found'));
         }
 
         return $userWithId;
@@ -68,4 +70,40 @@ class UserService
         ]);
     }
 
+    public function getPosts(int $user_id): JsonResponse|AnonymousResourceCollection
+    {
+        /** @var User|null $userWithId */
+        $userWithId = $this->repository->getUserById($user_id);
+
+        if ($userWithId === null) {
+            throw new BusinessException(__('messages.user_not_found'));
+        }
+
+        $posts = $userWithId->posts;
+
+        return PostResource::collection($posts);
+    }
+
+    public function getPostById(
+        int $user_id,
+        int $post_id,
+    ): JsonResponse|PostResource
+    {
+        /** @var User|null $userWithId */
+        $userWithId = $this->repository->getUserById($user_id);
+
+        if ($userWithId === null) {
+            throw new BusinessException(__('messages.user_not_found'));
+        }
+
+        $posts = $userWithId->posts;
+
+        $post = $posts->where('id', $post_id)->first();
+
+        if ($post === null) {
+            throw new BusinessException(__('messages.post_not_found'));
+        }
+
+        return new PostResource($post);
+    }
 }

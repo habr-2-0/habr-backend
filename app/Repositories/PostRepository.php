@@ -8,21 +8,27 @@ use App\Models\Post;
 
 class PostRepository implements IPostRepository
 {
-    public function getAllPosts(): array
+    public function getPostById(int $post_id): ?Post
     {
-        return Post::all()->toArray();
+        /** @var Post|null $post */
+
+        $post = Post::query()->find($post_id);
+
+        return $post;
     }
 
-    public function getPostById(int $postId): ?Post
-    {
-        return Post::find($postId);
-    }
     public function createPost(PostDTO $postDTO): Post
     {
         $post = new Post();
+        $post->user_id = $postDTO->getUserId();
         $post->title = $postDTO->getTitle();
         $post->description = $postDTO->getDescription();
-        $post->user_id = $postDTO->getUserId();
+        $post->status = $postDTO->getStatus();
+        $post->post_image = $postDTO->getPostImage();
+        $post->tags = $postDTO->getTags();
+        $post->views = $postDTO->getViews();
+        $post->created_at = $postDTO->getCreatedAt();
+        $post->updated_at = $postDTO->getUpdatedAt();
         $post->save();
 
         return $post;
@@ -32,19 +38,24 @@ class PostRepository implements IPostRepository
     {
         $post->title = $postDTO->getTitle();
         $post->description = $postDTO->getDescription();
-        $post->user_id = $postDTO->getUserId();
+        $post->status = $postDTO->getStatus();
+        $post->post_image = $postDTO->getPostImage();
+        $post->tags = $postDTO->getTags();
+        $post->views = $postDTO->getViews();
+        $post->created_at = $postDTO->getCreatedAt();
+        $post->updated_at = $postDTO->getUpdatedAt();
         $post->save();
 
         return $post;
     }
 
-    public function deletePost(int $id): void
+    public function deletePost(Post $post): Post
     {
-        $post = Post::find($id);
-        if ($post !== null) {
-            $post->delete();
-        }
+        $post->delete();
+
+        return $post;
     }
+
     public function getAllPostComments(int $postId): array
     {
         $post = $this->getPostById($postId);
