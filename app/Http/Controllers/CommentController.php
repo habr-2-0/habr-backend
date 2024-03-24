@@ -7,7 +7,6 @@ use App\DTO\CommentDTO;
 use App\Http\Requests\CommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Http\Services\CreateCommentService;
-use App\Models\Comment;
 use App\Repositories\CommentRepository;
 use Illuminate\Http\JsonResponse;
 
@@ -20,9 +19,9 @@ class CommentController extends Controller
      */
     private ICommentRepository $commentRepository;
 
-    public function __construct()
+    public function __construct(ICommentRepository $commentRepository)
     {
-        $this->commentRepository = new CommentRepository();
+        $this->commentRepository = $commentRepository;
     }
 
     /**
@@ -30,7 +29,7 @@ class CommentController extends Controller
      */
     public function index():JsonResponse
     {
-        $comments = Comment::all();
+        $comments = $this->commentRepository->getAllComments();
 
 
         return response()->json(
@@ -44,7 +43,9 @@ class CommentController extends Controller
     public function store(CommentRequest $request, CreateCommentService $service): CommentResource
     {
         $validated =$request->validated();
+
         $comment =$service->execute(CommentDTO::fromArray($validated));
+
         return new CommentResource($comment);
     }
 
@@ -55,19 +56,17 @@ class CommentController extends Controller
      */
     public function show(int $commentId) : CommentResource|JsonResponse
     {
-        $comment = Comment::query()->find($commentId);
+        $comment = $this->commentRepository->getCommentById($commentId);
 
         if (!$comment) {
             return response()->json([
-                'message' => 'Comment not found'
+                'message' => __('messages.comment_not_found')
             ], 404);
         }
-        return response()->json($comment);
+        //return response()->json($comment);
+        return new CommentResource($comment);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
 
 
     /**
@@ -75,22 +74,22 @@ class CommentController extends Controller
      */
     public function update(CommentRequest $request,  $commentId): CommentResource|JsonResponse
     {
-        $comment = Comment::query()->find($commentId);
+        $comment = $this->commentRepository->getCommentById($commentId);
 
         if (!$comment) {
             return response()->json([
-                'message' => 'Comment not found'
+                'message' => __('messages.comment_not_found')
             ], 404);
         }
 
         $validated = $request->validated();
+        $commentDTO = CommentDTO::fromArray($validated);
 
-        $comment->update($validated);
-        $comment->save();
+        $updatedComment = $this->commentRepository->updateComment($commentDTO, $comment);
 
         return response()->json([
-            'message' => 'Comment successfully updated',
-            'comment' => $comment
+            'message' => __('messages.comment_updated'),
+            'comment' => $updatedComment
         ], 200);
     }
 
@@ -99,17 +98,18 @@ class CommentController extends Controller
      */
     public function destroy(int $commentId): JsonResponse
     {
-            $comment = Comment::query()->find($commentId);
+        $comment = $this->commentRepository->getCommentById($commentId);
 
-            if ($comment === null){
-                return response()->json([
-                    'message' => 'Comment not found'
-                ]);
-            }
-            $comment->delete();
+        if ($comment === null){
+            return response()->json([
+                'message' => __('messages.comment_not_found')
+            ]);
+        }
+
+        $this->commentRepository->deleteComment($commentId);
 
         return response()->json([
-            'message' => 'Comment deleted'
+            'message' => __('messages.comment_deleted')
         ]);
     }
 }
