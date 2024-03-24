@@ -12,4 +12,10 @@ return [
     'logout_success'=> 'User is logged out successfully!',
     'record_deleted'=> 'Record deletion was successful!',
     'record_not_found'=> 'This record does not exist',
+
+    // for comments
+    'comment_created' => 'Comment created successfully!',
+    'comment_updated' => 'Comment updated successfully!',
+    'comment_not_found' => 'Comment not found.',
+    'comment_deleted' => 'Comment deleted successfully!',
 ];
