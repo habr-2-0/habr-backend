@@ -2,27 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Contacts\IUserRepository;
 use App\DTO\UserDTO;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Repositories\UserRepository;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Js;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
-
-//    private IUserRepository $repository;
-//
-//    public function __construct()
-//    {
-//        $this->repository = new UserRepository();
-//    }
-
     /**
      * Display a listing of the resource.
      * @return JsonResponse
@@ -37,19 +27,9 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-
-    /**
      * Store a newly created resource in storage.
-     * @param UserRequest $request
+     * @param RegisterRequest $request
      * @return UserResource
-     * @throws BusinessException
      */
     public function store(RegisterRequest $request, UserService $service): UserResource
     {
@@ -62,8 +42,8 @@ class UserController extends Controller
 
     /**
      * Display the specified resource.
-     * @param User $user
-     * @return UserResource
+     * @param int $id
+     * @return UserResource|JsonResponse
      */
 
     public function show(int $id, UserService $service): UserResource|JsonResponse
@@ -75,26 +55,16 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
-     * @param UserRequest $request
-     * @param User $user
+     * @param RegisterRequest $request
+     * @param int $id
      * @return JsonResponse
      */
     public function update(RegisterRequest $request, UserService $service, int $id): JsonResponse
     {
         $validated = $request->validated();
 
-        $user = $this->repository->getUserById($id);
-
-        $service->update(UserDTO::fromArray($validated), $user);
+        $service->update(UserDTO::fromArray($validated), $id);
 
         return response()->json([
             'message' => __('messages.user_updated')
@@ -104,24 +74,10 @@ class UserController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * @return JsonResponse
+     * @return JsonResponse|User
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(UserService $service, int $id): User|JsonResponse
     {
-        $user = $this->repository->getUserById($id);
-
-
-        if ($user === null) {
-            $result = response()->json([
-                'message' => __('messages.record_not_found')
-            ], 400);
-        } else {
-            User::query()->find($id)->delete();
-            $result = response()->json([
-                'message' => __('messages.record_deleted')
-            ]);
-        }
-
-        return $result;
+        return $service->delete($id);
     }
 }

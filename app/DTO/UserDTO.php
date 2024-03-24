@@ -7,9 +7,10 @@ class UserDTO
     public function __construct(
         private string $name,
         private string $surname,
-        private string $email,
-        private int $password,
-        private ?string $profile_image = null
+        private ?string $email,
+        private string $password,
+        private ?string $profile_image = null,
+        private int $followers_count = 0
     )
     {
 
@@ -41,6 +42,12 @@ class UserDTO
         return $this->profile_image;
     }
 
+    public function getFollowersCount(): int
+    {
+        return $this->followers_count;
+    }
+
+
 
     public static function fromArray(array $data): static
     {
@@ -49,7 +56,8 @@ class UserDTO
             surname: $data['surname'],
             email: $data['email'],
             password: $data['password'],
-            profile_image: $data['profile_image']
+            profile_image: $data['profile_image'],
+            followers_count: $data['followers_count']
         );
     }
 }

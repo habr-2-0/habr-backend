@@ -18,15 +18,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
-Route::controller(UserController::class)->group(function () {
-    Route::get('/users', 'index');
-    Route::get('/users/{id}', 'show');
-});
-
 Route::middleware(Localization::class)->group(callback: function () {
     Route::controller(LoginRegisterController::class)->group(function () {
         Route::post('/register', 'register');
@@ -39,9 +30,9 @@ Route::middleware(Localization::class)->group(callback: function () {
         //    users crud
         Route::controller(UserController::class)->group(function () {
             Route::post('/users', 'store');
-//            Route::get('/users', 'index');
-//            Route::get('/users/{id}', 'show');
-            Route::post('/users/{id}', 'update');
+            Route::get('/users', 'index');
+            Route::get('/users/{id}', 'show');
+            Route::put('/users/{id}', 'update');
             Route::delete('/users/{id}', 'destroy');
         });
 

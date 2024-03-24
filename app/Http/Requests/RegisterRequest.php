@@ -24,9 +24,10 @@ class RegisterRequest extends FormRequest
         return [
             'name' => 'required|string|max:50',
             'surname' => 'required|string|max:50',
-            'email' => 'required|string|email:rfc,dns|max:250|unique:users,email',
+            'email' => 'required|string|email|max:250',
             'password' => 'required|string|min:8|confirmed',
             'profile_image' => 'nullable|string',
+            'followers_count' => 'int'
         ];
     }
 }

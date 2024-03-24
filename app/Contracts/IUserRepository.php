@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Contacts;
+namespace App\Contracts;
 
 use App\DTO\UserDTO;
 use App\Models\User;

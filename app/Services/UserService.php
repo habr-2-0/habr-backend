@@ -2,11 +2,12 @@
 
 namespace App\Services;
 
-use App\Contacts\IUserRepository;
+use App\Contracts\IUserRepository;
 use App\DTO\UserDTO;
 use App\Exceptions\BusinessException;
 use App\Models\User;
 use App\Repositories\UserRepository;
+use Illuminate\Http\JsonResponse;
 
 class UserService
 {
@@ -27,14 +28,15 @@ class UserService
         return $this->repository->createUser($userDTO);
     }
 
-    public function update(UserDTO $userDTO, User $user): User
+    public function update(UserDTO $userDTO, int $id): User
     {
+        $userWithId = $this->repository->getUserById($id);
         $userWithEmail = $this->repository->getUserByEmail($userDTO->getEmail());
 
-        if ($userWithEmail !== null) {
+        if ($userWithEmail !== null && $userWithId->email !== $userDTO->getEmail()) {
             throw new BusinessException(__('messages.user_email_already_exists'));
-        } else if ($user->email !== $userDTO->getEmail()) {
-            return $this->repository->updateUser($userDTO, $user);
+        } else {
+            return $this->repository->updateUser($userDTO, $userWithId);
         }
     }
 
@@ -47,6 +49,23 @@ class UserService
         }
 
         return $userWithId;
+    }
+
+    public function delete(int $id): User|JsonResponse
+    {
+        $userWithId = $this->repository->getUserById($id);
+
+        if ($userWithId === null) {
+            return response()->json([
+                'message' => __('messages.record_not_found')
+            ], 400);
+        } else {
+            $this->repository->deleteUser($userWithId);
+        }
+
+        return response()->json([
+            'message' => __('messages.record_deleted')
+        ]);
     }
 
 }
