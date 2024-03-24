@@ -5,9 +5,11 @@ namespace App\Http\Services;
 use App\Contracts\IPostRepository;
 use App\DTO\PostDTO;
 use App\Exceptions\BusinessException;
+use App\Http\Resources\CommentResource;
 use App\Models\Post;
 use App\Repositories\PostRepository;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class PostService
 {
@@ -58,7 +60,44 @@ class PostService
         ]);
     }
 
+    public function getComments(
+        int $post_id
+    ): JsonResponse|AnonymousResourceCollection
+    {
+        /** @var Post|null $postWithId */
+        $postWithId = $this->repository->getPostById($post_id);
 
+        if ($postWithId === null) {
+            throw new BusinessException(__('messages.post_not_found'));
+        }
+
+        $comments = $postWithId->comments;
+
+        return CommentResource::collection($comments);
+    }
+
+    public function getCommentById(
+        int $post_id,
+        int $comment_id,
+    ): JsonResponse|CommentResource
+    {
+        /** @var Post|null $postWithId */
+        $postWithId = $this->repository->getPostById($post_id);
+
+        if ($postWithId === null) {
+            throw new BusinessException(__('messages.post_not_found'));
+        }
+
+        $comments = $postWithId->comments;
+
+        $comment = $comments->where('id', $comment_id)->first();
+
+        if ($comment === null) {
+            throw new BusinessException(__('messages.comment_not_found'));
+        }
+
+        return new CommentResource($comment);
+    }
 }
 
 

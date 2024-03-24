@@ -10,6 +10,8 @@ use App\Http\Resources\PostResource;
 use App\Http\Services\PostService;
 use App\Models\Post;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 
 class PostController extends Controller
 {
@@ -29,6 +31,8 @@ class PostController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * @param PostRequest $request
+     * @return PostResource
      */
     public function store(PostRequest $request, PostService $service): PostResource
     {
@@ -41,16 +45,13 @@ class PostController extends Controller
 
     /**
      * Display the specified resource.
+     * @param int $id
+     * @return PostResource|JsonResponse
      */
-    public function show(int $postId): PostResource|JsonResponse
+    public function show(int $id, PostService $service): PostResource|JsonResponse
     {
-        $post = $this->postRepository->getPostById($postId);
 
-        if (!$post) {
-            return response()->json([
-                'message' => __('messages.post_not_found')
-            ], 404);
-        }
+        $post = $service->show($id);
 
         return new PostResource($post);
     }
@@ -58,56 +59,48 @@ class PostController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @param PostRequest $request
+     * @param int $id
+     * @return PostResource
      */
-    public function update(PostRequest $request, $postId): PostResource|JsonResponse
+    public function update(PostRequest $request, PostService $service, int $id): PostResource
     {
-        $post = $this->postRepository->getPostById($postId);
-
-        if (!$post) {
-            return response()->json([
-                'message' => __('messages.post_not_found')
-            ], 404);
-        }
-
         $validated = $request->validated();
-        $postDTO = PostDTO::fromArray($validated);
 
-        $updatedPost = $this->postRepository->updatePost($postDTO, $post);
+        $post = $service->update(PostDTO::fromArray($validated), $id);
 
-        return response()->json([
-            'message' => __('messages.post_updated'),
-            'post' => $updatedPost
-        ]);
+        return new PostResource($post);
     }
 
     /**
      * Remove the specified resource from storage.
+     * @return JsonResponse|Post
      */
-    public function destroy(int $postId): JsonResponse
+    public function destroy(PostService $service, int $id): Post|JsonResponse
     {
-        $post = $this->postRepository->getPostById($postId);
-
-        if ($post === null) {
-            return response()->json([
-                'message' => __('messages.post_not_found')
-            ]);
-        }
-
-        $this->postRepository->deletePost($postId);
-
-        return response()->json([
-            'message' => __('messages.post_deleted')
-        ]);
+        return $service->delete($id);
     }
 
-    public function getPostComments(PostCommentsRequest $request)
+
+    /**
+     * @param int $post_id
+     * @return JsonResponse|AnonymousResourceCollection
+     */
+    public function getPostComments(
+        PostService $service,
+        int         $post_id
+    ): JsonResponse|AnonymousResourceCollection
     {
-        $validated = $request->validated();
-        $postId = $validated['post_id'];
-
-        $comments = $this->postRepository->getAllPostComments($postId);
-
-        return new PostCommentsResource($comments);
+        return $service->getComments($post_id);
     }
 
+
+    public function getPostCommentById(
+        PostService $service,
+        int         $post_id,
+        int         $comment_id,
+    ): JsonResponse|PostResource
+    {
+        return $service->getCommentById($post_id, $comment_id);
+    }
 }

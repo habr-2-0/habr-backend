@@ -11,5 +11,4 @@ interface IPostRepository
     public function createPost(PostDTO $postDTO): Post;
     public function updatePost(PostDTO $postDTO, Post $post): Post;
     public function deletePost(Post $post): Post;
-    public function getAllPostComments(int $postId): array;
 }
