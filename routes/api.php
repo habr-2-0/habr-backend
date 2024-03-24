@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginRegisterController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Middleware\Localization;
@@ -22,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 //});
 
 Route::middleware(Localization::class)->group(callback: function () {
-    Route::controller(LoginRegisterController::class)->group(function () { 
+    Route::controller(LoginRegisterController::class)->group(function () {
         Route::post('/register', 'register');
         Route::post('/login', 'login');
     });
@@ -45,6 +46,15 @@ Route::middleware(Localization::class)->group(callback: function () {
         Route::delete('comments/{id}', [CommentController::class, 'destroy']);
         Route::post('comments', [CommentController::class, 'store']);
         Route::put('comments/{id}', [CommentController::class, 'update']);
+
+        // posts crud
+        Route::get('posts', [PostController::class, 'index']);
+        Route::get('posts/{id}', [PostController::class, 'show']);
+        Route::delete('posts/{id}', [PostController::class, 'destroy']);
+        Route::post('posts', [PostController::class, 'store']);
+        Route::put('posts/{id}', [PostController::class, 'update']);
+
+        Route::get('posts/{id}/comments', [PostController::class, 'getAllPostComments']);
     });
 
 });

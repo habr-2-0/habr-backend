@@ -6,6 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property string $title
+ * @property string $description
+ * @property string $status
+ * @property string $post_image
+ * @property string $created_at
+ * @property string $updated_at
+ */
 
 class Post extends Model
 {

@@ -10,6 +10,7 @@ use App\Repositories\CommentRepository;
 class CreateCommentService
 {
     private ICommentRepository $commentRepository;
+
     public function __construct()
     {
         $this->commentRepository= new CommentRepository();
