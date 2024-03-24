@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->string('status')->default('draft');
-            $table->unsignedBigInteger('post_image')->nullable();
+            $table->string('post_image')->nullable();
+            $table->json('tags')->nullable();
+            $table->integer('views')->default(0);
             $table->timestamps();
 
             //fk

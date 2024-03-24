@@ -20,8 +20,10 @@ class Localization
     {
         if ($request->header('App-Locale') == 'ru') {
             App::setLocale('ru');
+            App::setFallbackLocale('ru');
         } else if ($request->header('App-Locale') == 'en') {
             App::setLocale('en');
+            App::setFallbackLocale('en');
         }
 
 

@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('surname');
             $table->string('email')->unique();
             $table->string('password');
-            $table->unsignedBigInteger('profile_image')->nullable();
-            $table->unsignedInteger('followers')->default(0);
+            $table->string('profile_image')->nullable();
+            $table->unsignedInteger('followers_count')->default(0);
             $table->timestamps();
         });
     }

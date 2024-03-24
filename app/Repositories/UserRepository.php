@@ -36,7 +36,15 @@ class UserRepository implements IUserRepository
         $user->email = $userDTO->getEmail();
         $user->password = $userDTO->getPassword();
         $user->profile_image = $userDTO->getProfileImage();
+        $user->followers_count = $userDTO->getFollowersCount();
         $user->save();
+
+        return $user;
+    }
+
+    public function deleteUser(User $user)
+    {
+        $user->delete();
 
         return $user;
     }
