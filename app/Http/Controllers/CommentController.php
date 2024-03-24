@@ -60,7 +60,7 @@ class CommentController extends Controller
 
         if (!$comment) {
             return response()->json([
-                'message' => 'Comment not found'
+                'message' => __('messages.comment_not_found')
             ], 404);
         }
         //return response()->json($comment);
@@ -78,7 +78,7 @@ class CommentController extends Controller
 
         if (!$comment) {
             return response()->json([
-                'message' => 'Comment not found'
+                'message' => __('messages.comment_not_found')
             ], 404);
         }
 
@@ -88,7 +88,7 @@ class CommentController extends Controller
         $updatedComment = $this->commentRepository->updateComment($commentDTO, $comment);
 
         return response()->json([
-            'message' => 'Comment successfully updated',
+            'message' => __('messages.comment_updated'),
             'comment' => $updatedComment
         ], 200);
     }
@@ -102,14 +102,14 @@ class CommentController extends Controller
 
         if ($comment === null){
             return response()->json([
-                'message' => 'Comment not found'
+                'message' => __('messages.comment_not_found')
             ]);
         }
 
         $this->commentRepository->deleteComment($commentId);
 
         return response()->json([
-            'message' => 'Comment deleted'
+            'message' => __('messages.comment_deleted')
         ]);
     }
 }
