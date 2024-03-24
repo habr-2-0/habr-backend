@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginRegisterController;
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
@@ -55,6 +56,13 @@ Route::middleware(Localization::class)->group(callback: function () {
         Route::put('posts/{id}', [PostController::class, 'update']);
 
         Route::get('posts/{id}/comments', [PostController::class, 'getPostComments']);
+
+        // follows crud
+        Route::get('follows', [FollowController::class, 'index']);
+        Route::get('follows/{id}', [FollowController::class, 'show']);
+        Route::delete('follows/{id}', [FollowController::class, 'destroy']);
+        Route::post('follows', [FollowController::class, 'store']);
+        Route::put('follows/{id}', [FollowController::class, 'update']);
     });
 
 });

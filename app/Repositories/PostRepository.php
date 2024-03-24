@@ -17,6 +17,17 @@ class PostRepository implements IPostRepository
         return $post;
     }
 
+<<<<<<< HEAD
+=======
+
+    public function getPostById(int $postId): ?Post
+    {
+        /** @var Post|null $post */
+        $post = Post::query()->find($postId);
+
+        return $post;
+    }
+>>>>>>> ff1e41eb30edf7aadf09cefd71631d9b377fa973
     public function createPost(PostDTO $postDTO): Post
     {
         $post = new Post();
@@ -51,9 +62,14 @@ class PostRepository implements IPostRepository
 
     public function deletePost(Post $post): Post
     {
+<<<<<<< HEAD
         $post->delete();
 
         return $post;
+=======
+        $post = Post::query()->find($id);
+        $post?->delete();
+>>>>>>> ff1e41eb30edf7aadf09cefd71631d9b377fa973
     }
 
     public function getAllPostComments(int $postId): array
