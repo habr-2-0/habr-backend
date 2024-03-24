@@ -37,4 +37,16 @@ class UserService
             return $this->repository->updateUser($userDTO, $user);
         }
     }
+
+    public function show(int $id): User
+    {
+        $userWithId = $this->repository->getUserById($id);
+
+        if ($userWithId === null) {
+            throw new BusinessException(400, __('messages.user_not_found'));
+        }
+
+        return $userWithId;
+    }
+
 }

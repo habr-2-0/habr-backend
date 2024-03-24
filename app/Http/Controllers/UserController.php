@@ -16,12 +16,12 @@ use Symfony\Component\HttpFoundation\Response;
 class UserController extends Controller
 {
 
-    private IUserRepository $repository;
-
-    public function __construct()
-    {
-        $this->repository = new UserRepository();
-    }
+//    private IUserRepository $repository;
+//
+//    public function __construct()
+//    {
+//        $this->repository = new UserRepository();
+//    }
 
     /**
      * Display a listing of the resource.
@@ -29,7 +29,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::simplePaginate(15);
 
         return response()->json([
             'data' => $users
@@ -66,16 +66,11 @@ class UserController extends Controller
      * @return UserResource
      */
 
-    public function show(int $id): UserResource|JsonResponse
+    public function show(int $id, UserService $service): UserResource|JsonResponse
     {
-        $user = $this->repository->getUserById($id);
 
+        $user = $service->show($id);
 
-        if ($user === null) {
-            return response()->json([
-                'message' => __('messages.user_not_found')
-            ], 400);
-        }
         return new UserResource($user);
     }
 

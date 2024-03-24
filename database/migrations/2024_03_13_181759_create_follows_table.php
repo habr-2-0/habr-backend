@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,7 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('follower_id');
             $table->unsignedBigInteger('following_id');
             $table->timestamp('dateFollowed');
-            $table->timestamps();
+            $table->timestamp('updated_at')->useCurrent();
 
             //index
             $table->index('follower_id');

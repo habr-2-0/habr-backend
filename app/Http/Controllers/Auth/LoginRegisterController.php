@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginRegisterController extends Controller
 {
-
     /**
      * Register a new user.
      * @param App\Http\Requests\RegisterRequest $request
