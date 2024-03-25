@@ -8,6 +8,8 @@ return [
     'logout_success' => 'User is logged out successfully!',
     'record_deleted' => 'Record deletion was successful!',
     'record_not_found' => 'This record does not exist',
+    'unauthenticated' => 'Unauthenticated.',
+    'token_expired' => 'Your token has expired. Please login again.',
 
     // for users
     'user_created' => 'The user has been successfully created!',

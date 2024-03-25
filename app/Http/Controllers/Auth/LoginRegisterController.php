@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\DTO\UserDTO;
+use App\Exceptions\DuplicateEntryException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
@@ -15,9 +16,9 @@ class LoginRegisterController extends Controller
 {
     /**
      * Register a new user.
-     * @param App\Http\Requests\RegisterRequest $request
-     * @param App\Services\UserService $service
-     * @return \Illuminate\Http\Response
+     * @param RegisterRequest $request
+     * @param UserService $service
+     * @return JsonResponse
      */
 
     public function register(RegisterRequest $request, UserService $service): JsonResponse
@@ -26,7 +27,10 @@ class LoginRegisterController extends Controller
 
         $user = $service->create(UserDTO::fromArray($validated));
 
-        $data['token'] = $user->createToken($request->validated('email'))->plainTextToken;
+        $expiresAt = now()->addHour();
+
+        $data['token'] = $user->createToken($request->validated('email'), ['*'], $expiresAt)->plainTextToken;
+
         $data['user'] = $user;
 
         $response = [
@@ -42,8 +46,8 @@ class LoginRegisterController extends Controller
     /**
      * Authenticate the user.
      *
-     * @param App\Http\Requests\RegisterRequest $request
-     * @return \Illuminate\Http\Response
+     * @param LoginRequest $request
+     * @return JsonResponse
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -75,7 +79,7 @@ class LoginRegisterController extends Controller
     /**
      * Log out the user from application.
      *
-     * @return \Illuminate\Http\Response
+     * @return JsonResponse
      */
     public function logout(): JsonResponse
     {

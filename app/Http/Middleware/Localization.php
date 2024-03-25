@@ -26,7 +26,6 @@ class Localization
             App::setFallbackLocale('en');
         }
 
-
         return $next($request);
     }
 }

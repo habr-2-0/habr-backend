@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\DTO\UserDTO;
 use App\Exceptions\BusinessException;
+use App\Exceptions\DuplicateEntryException;
+use App\Exceptions\ModelDeletionException;
+use App\Exceptions\ModelNotFoundException;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
@@ -45,7 +48,9 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      * @param int $id
+     * @param UserService $service
      * @return UserResource|JsonResponse
+     * @throws ModelNotFoundException
      */
 
     public function show(int $id, UserService $service): UserResource|JsonResponse
@@ -59,8 +64,10 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      * @param RegisterRequest $request
+     * @param UserService $service
      * @param int $id
      * @return JsonResponse
+     * @throws DuplicateEntryException
      */
     public function update(RegisterRequest $request, UserService $service, int $id): JsonResponse
     {
@@ -76,7 +83,11 @@ class UserController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * @param UserService $service
+     * @param int $id
      * @return JsonResponse|User
+     * @throws ModelDeletionException
+     * @throws ModelNotFoundException
      */
     public function destroy(UserService $service, int $id): User|JsonResponse
     {
@@ -84,8 +95,10 @@ class UserController extends Controller
     }
 
     /**
+     * @param UserService $service
      * @param int $user_id
      * @return JsonResponse|AnonymousResourceCollection
+     * @throws ModelNotFoundException
      */
     public function getUserPosts(
         UserService $service,
@@ -95,7 +108,13 @@ class UserController extends Controller
         return $service->getPosts($user_id);
     }
 
-
+    /**
+     * @param UserService $service
+     * @param int $user_id
+     * @param int $post_id
+     * @return JsonResponse|AnonymousResourceCollection
+     * @throws ModelNotFoundException
+     */
     public function getUserPostById(
         UserService $service,
         int         $user_id,

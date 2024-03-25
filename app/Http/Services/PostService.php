@@ -5,6 +5,8 @@ namespace App\Http\Services;
 use App\Contracts\IPostRepository;
 use App\DTO\PostDTO;
 use App\Exceptions\BusinessException;
+use App\Exceptions\ModelDeletionException;
+use App\Exceptions\ModelNotFoundException;
 use App\Http\Resources\CommentResource;
 use App\Models\Post;
 use App\Repositories\PostRepository;
@@ -37,7 +39,7 @@ class PostService
         $postWithId = $this->repository->getPostById($id);
 
         if ($postWithId === null) {
-            throw new BusinessException(__('messages.post_not_found'));
+            throw new ModelNotFoundException(__('messages.post_not_found'));
         }
 
         return $postWithId;
@@ -48,16 +50,11 @@ class PostService
         $postWithId = $this->repository->getPostById($id);
 
         if ($postWithId === null) {
-            return response()->json([
-                'message' => __('messages.record_not_found')
-            ], 400);
-        } else {
-            $this->repository->deletePost($postWithId);
+            throw new ModelNotFoundException(__('messages.record_not_found'));
         }
 
-        return response()->json([
-            'message' => __('messages.record_deleted')
-        ]);
+        $this->repository->deletePost($postWithId);
+        throw new ModelDeletionException(__('messages.record_deleted'));
     }
 
     public function getComments(
@@ -68,7 +65,7 @@ class PostService
         $postWithId = $this->repository->getPostById($post_id);
 
         if ($postWithId === null) {
-            throw new BusinessException(__('messages.post_not_found'));
+            throw new ModelNotFoundException(__('messages.post_not_found'));
         }
 
         $comments = $postWithId->comments;
@@ -85,7 +82,7 @@ class PostService
         $postWithId = $this->repository->getPostById($post_id);
 
         if ($postWithId === null) {
-            throw new BusinessException(__('messages.post_not_found'));
+            throw new ModelNotFoundException(__('messages.post_not_found'));
         }
 
         $comments = $postWithId->comments;
@@ -93,7 +90,7 @@ class PostService
         $comment = $comments->where('id', $comment_id)->first();
 
         if ($comment === null) {
-            throw new BusinessException(__('messages.comment_not_found'));
+            throw new ModelNotFoundException(__('messages.comment_not_found'));
         }
 
         return new CommentResource($comment);
