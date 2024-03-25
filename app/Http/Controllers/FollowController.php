@@ -5,90 +5,53 @@ namespace App\Http\Controllers;
 use App\Contracts\IFollowRepository;
 use App\DTO\FollowDTO;
 use App\Http\Requests\FollowRequest;
+use App\Http\Resources\FollowResource;
 use App\Http\Services\CreateFollowService;
+use App\Models\Follow;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class FollowController extends Controller
 {
-    private IFollowRepository $followRepository;
-
-    public function __construct(IFollowRepository $followRepository)
-    {
-        $this->followRepository = $followRepository;
-    }
 
     public function index(): JsonResponse
     {
-        $follows = $this->followRepository->getAllFollows();
+        $follows = Follow::simplePaginate(15);
 
         return response()->json([
             'data' => $follows
         ]);
     }
 
-    public function store(FollowRequest $request, CreateFollowService $service): JsonResponse
+    public function store(FollowRequest $request, CreateFollowService $service): FollowResource
     {
         $validated = $request->validated();
-        $followDTO = FollowDTO::fromArray($validated);
 
-        $follow = $service->execute($followDTO);
+        $follow = $service->create(FollowDTO::fromArray($validated));
 
-        return response()->json([
-            'message' => __('messages.follow_created'),
-            'follow' => $follow
-        ], 201);
+        return new FollowResource($follow);
     }
 
-    public function show(int $followId): JsonResponse
+    public function show(int $followId, CreateFollowService $service): JsonResponse|FollowResource
     {
-        $follow = $this->followRepository->getFollowById($followId);
+        $follow = $service->show($followId);
 
-        if (!$follow) {
-            return response()->json([
-                'message' => __('messages.follow_not_found')
-            ], 404);
-        }
-
-        return response()->json([
-            'data' => $follow
-        ]);
+        return new FollowResource($follow);
     }
 
-    public function update(FollowRequest $request,  $followId): JsonResponse
+    public function update(FollowRequest $request,CreateFollowService $service, int  $followId): JsonResponse
     {
-        $follow = $this->followRepository->getFollowById($followId);
-
-        if (!$follow) {
-            return response()->json([
-                'message' => __('messages.follow_not_found')
-            ], 404);
-        }
-
         $validated = $request->validated();
-        $followDTO = FollowDTO::fromArray($validated);
 
-        $updatedFollow = $this->followRepository->updateFollow($followDTO, $follow);
+        $service->update(FollowDTO::fromArray($validated), $followId);
 
         return response()->json([
-            'message' => __('messages.follow_updated'),
-            'follow' => $updatedFollow
-        ]);
+            'message' => __('messages.follow_updated')
+        ], Response::HTTP_OK);
     }
 
-    public function destroy(int $followId): JsonResponse
+    public function destroy(int $followId, CreateFollowService $service): JsonResponse
     {
-        $follow = $this->followRepository->getFollowById($followId);
-
-        if ($follow === null){
-            return response()->json([
-                'message' => __('messages.follow_not_found')
-            ]);
-        }
-
-        $this->followRepository->deleteFollow($followId);
-
-        return response()->json([
-            'message' => __('messages.follow_deleted')
-        ]);
+        return $service->delete($followId);
     }
 }
