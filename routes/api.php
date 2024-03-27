@@ -30,11 +30,10 @@ Route::middleware(Localization::class)->group(callback: function () {
 
         //    users crud
         Route::controller(UserController::class)->group(function () {
-            Route::post('/users', 'store');
             Route::get('/users', 'index');
-            Route::get('/users/{id}', 'show');
-            Route::put('/users/{id}', 'update');
-            Route::delete('/users/{id}', 'destroy');
+            Route::get('users/{id}', 'show');
+            Route::put('users', 'update');
+            Route::delete('users', 'destroy');
         });
 
         //    User Posts Routes
@@ -55,7 +54,9 @@ Route::middleware(Localization::class)->group(callback: function () {
         Route::post('posts', [PostController::class, 'store']);
         Route::put('posts/{id}', [PostController::class, 'update']);
 
-        Route::get('posts/{id}/comments', [PostController::class, 'getPostComments']);
+        //    Posts Comments Routes
+        Route::get('posts/{post_id}/comments', [PostController::class, 'getPostComments']);
+        Route::get('posts/{post_id}/comments/{comment_id}', [PostController::class, 'getPostCommentById']);
 
         // follows crud
         Route::get('follows', [FollowController::class, 'index']);

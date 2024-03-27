@@ -11,8 +11,7 @@ class ModelDeletionException extends Exception
     public function render(): JsonResponse
     {
         return response()->json([
-            'error' => $this->getMessage(),
-            'code' => $this->getCode()
+            'message' => $this->getMessage(),
         ], Response::HTTP_OK);
     }
 }

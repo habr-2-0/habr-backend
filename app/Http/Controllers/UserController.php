@@ -3,81 +3,71 @@
 namespace App\Http\Controllers;
 
 use App\DTO\UserDTO;
-use App\Exceptions\BusinessException;
-use App\Exceptions\DuplicateEntryException;
 use App\Exceptions\ModelDeletionException;
 use App\Exceptions\ModelNotFoundException;
-use App\Http\Requests\RegisterRequest;
+use App\Exceptions\ModelUpdationException;
+use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\PostResource;
+use App\Http\Resources\PublicPostResource;
+use App\Http\Resources\PublicUserResource;
 use App\Http\Resources\UserResource;
 use App\Http\Services\UserService;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * @return JsonResponse
+     * @return AnonymousResourceCollection
      */
-    public function index(): JsonResponse
+    public function index(
+        UserService $service
+    ): AnonymousResourceCollection
     {
-        $users = User::simplePaginate(15);
+        $users = $service->index();
 
-        return response()->json([
-            'data' => $users
-        ]);
+        return PublicUserResource::collection($users);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param RegisterRequest $request
-     * @return UserResource
-     */
-    public function store(RegisterRequest $request, UserService $service): UserResource
-    {
-        $validated = $request->validated();
-
-        $user = $service->create(UserDTO::fromArray($validated));
-
-        return new UserResource($user);
-    }
 
     /**
      * Display the specified resource.
      * @param int $id
      * @param UserService $service
-     * @return UserResource|JsonResponse
+     * @return PublicUserResource|JsonResponse
      * @throws ModelNotFoundException
      */
 
-    public function show(int $id, UserService $service): UserResource|JsonResponse
+    public function show(
+        int         $id,
+        UserService $service
+    ): PublicUserResource|JsonResponse
     {
-
         $user = $service->show($id);
 
-        return new UserResource($user);
+        return new PublicUserResource($user);
     }
 
     /**
      * Update the specified resource in storage.
-     * @param RegisterRequest $request
+     * @param UserUpdateRequest $request
      * @param UserService $service
-     * @param int $id
      * @return JsonResponse
-     * @throws DuplicateEntryException
+     * @throws ModelUpdationException|ModelNotFoundException
      */
-    public function update(RegisterRequest $request, UserService $service, int $id): JsonResponse
+    public function update(
+        UserUpdateRequest $request,
+        UserService       $service,
+    ): JsonResponse
     {
         $validated = $request->validated();
 
-        $service->update(UserDTO::fromArray($validated), $id);
+        $user = Auth::user();
 
-        return response()->json([
-            'message' => __('messages.user_updated')
-        ], Response::HTTP_OK);
+        $service->update(UserDTO::fromArray($validated), $user->id);
     }
 
 
@@ -85,11 +75,14 @@ class UserController extends Controller
      * Remove the specified resource from storage.
      * @param UserService $service
      * @param int $id
-     * @return JsonResponse|User
+     * @return JsonResponse
      * @throws ModelDeletionException
      * @throws ModelNotFoundException
      */
-    public function destroy(UserService $service, int $id): User|JsonResponse
+    public function destroy(
+        UserService $service,
+        int         $id
+    ): JsonResponse
     {
         return $service->delete($id);
     }
@@ -112,14 +105,14 @@ class UserController extends Controller
      * @param UserService $service
      * @param int $user_id
      * @param int $post_id
-     * @return JsonResponse|AnonymousResourceCollection
+     * @return JsonResponse|PublicPostResource
      * @throws ModelNotFoundException
      */
     public function getUserPostById(
         UserService $service,
         int         $user_id,
         int         $post_id,
-    ): JsonResponse|PostResource
+    ): JsonResponse|PublicPostResource
     {
         return $service->getPostById($user_id, $post_id);
     }

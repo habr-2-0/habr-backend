@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Contracts\IPostRepository;
 use App\DTO\PostDTO;
 use App\Models\Post;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class PostRepository implements IPostRepository
 {
@@ -20,14 +22,13 @@ class PostRepository implements IPostRepository
     public function createPost(PostDTO $postDTO): Post
     {
         $post = new Post();
+        $post->user_id = Auth::user()->id;
         $post->title = $postDTO->getTitle();
         $post->description = $postDTO->getDescription();
         $post->status = $postDTO->getStatus();
         $post->post_image = $postDTO->getPostImage();
-        $post->tags = $postDTO->getTags();
-        $post->views = $postDTO->getViews();
-        $post->created_at = $postDTO->getCreatedAt();
-        $post->updated_at = $postDTO->getUpdatedAt();
+        $post->tags = json_encode($postDTO->getTags());
+        $post->views = 0;
         $post->save();
 
         return $post;
@@ -40,18 +41,20 @@ class PostRepository implements IPostRepository
         $post->status = $postDTO->getStatus();
         $post->post_image = $postDTO->getPostImage();
         $post->tags = $postDTO->getTags();
-        $post->views = $postDTO->getViews();
-        $post->created_at = $postDTO->getCreatedAt();
-        $post->updated_at = $postDTO->getUpdatedAt();
+        $post->updated_at = Carbon::now();
         $post->save();
 
         return $post;
     }
 
-    public function deletePost(Post $post): Post
+    public function deletePost(Post $post): void
     {
         $post->delete();
+    }
 
-        return $post;
+    public function incrementPostViews(Post $post): void
+    {
+        $post->views++;
+        $post->save();
     }
 }

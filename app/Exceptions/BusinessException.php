@@ -3,15 +3,17 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Http\JsonResponse;
 use PHPUnit\Event\Code\Throwable;
 use Symfony\Component\HttpFoundation\Response;
 
 class BusinessException extends Exception
 {
-
-    public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null)
+    public function render(): JsonResponse
     {
-        parent::__construct($message, $code, $previous);
+        return response()->json([
+            'error' => $this->getMessage(),
+        ], $this->getCode());
     }
-
 }
+

@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Contracts\IPostRepository;
 use App\DTO\PostDTO;
+use App\Exceptions\BusinessException;
+use App\Exceptions\ModelDeletionException;
+use App\Exceptions\ModelNotFoundException;
+use App\Exceptions\ModelUpdationException;
 use App\Http\Requests\PostCommentsRequest;
 use App\Http\Requests\PostRequest;
 use App\Http\Resources\PostResource;
@@ -21,7 +25,7 @@ class PostController extends Controller
      */
     public function index(): JsonResponse
     {
-        $posts = Post::simplePaginate(15);
+        $posts = Post::where('status', 'published')->simplePaginate(15);
 
         return response()->json([
             'data' => $posts
@@ -32,9 +36,13 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      * @param PostRequest $request
+     * @param PostService $service
      * @return PostResource
      */
-    public function store(PostRequest $request, PostService $service): PostResource
+    public function store(
+        PostRequest $request,
+        PostService $service
+    ): PostResource
     {
         $validated = $request->validated();
 
@@ -46,11 +54,15 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      * @param int $id
+     * @param PostService $service
      * @return PostResource|JsonResponse
+     * @throws ModelNotFoundException
      */
-    public function show(int $id, PostService $service): PostResource|JsonResponse
+    public function show(
+        int         $id,
+        PostService $service
+    ): PostResource|JsonResponse
     {
-
         $post = $service->show($id);
 
         return new PostResource($post);
@@ -60,31 +72,46 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      * @param PostRequest $request
+     * @param PostService $service
      * @param int $id
      * @return PostResource
+     * @throws ModelNotFoundException
+     * @throws ModelUpdationException
+     * @throws BusinessException
      */
-    public function update(PostRequest $request, PostService $service, int $id): PostResource
+    public function update(
+        PostRequest $request,
+        PostService $service,
+        int         $id
+    ): PostResource
     {
         $validated = $request->validated();
 
-        $post = $service->update(PostDTO::fromArray($validated), $id);
-
-        return new PostResource($post);
+        $service->update(PostDTO::fromArray($validated), $id);
     }
 
     /**
      * Remove the specified resource from storage.
+     * @param PostService $service
+     * @param int $id
      * @return JsonResponse|Post
+     * @throws ModelNotFoundException
+     * @throws ModelDeletionException|BusinessException
      */
-    public function destroy(PostService $service, int $id): Post|JsonResponse
+    public function destroy(
+        PostService $service,
+        int         $id
+    ): Post|JsonResponse
     {
         return $service->delete($id);
     }
 
 
     /**
+     * @param PostService $service
      * @param int $post_id
      * @return JsonResponse|AnonymousResourceCollection
+     * @throws ModelNotFoundException
      */
     public function getPostComments(
         PostService $service,
@@ -95,6 +122,13 @@ class PostController extends Controller
     }
 
 
+    /**
+     * @param PostService $service
+     * @param int $post_id
+     * @param int $comment_id
+     * @return JsonResponse|AnonymousResourceCollection
+     * @throws ModelNotFoundException
+     */
     public function getPostCommentById(
         PostService $service,
         int         $post_id,

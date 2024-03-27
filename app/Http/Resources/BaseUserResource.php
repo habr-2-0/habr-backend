@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class BaseUserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,10 +19,8 @@ class UserResource extends JsonResource
             'name' => $this->resource->name,
             'surname' => $this->resource->surname,
             'email' => $this->resource->email,
-            'password' => $this->resource->password,
             'profile_image' => $this->resource->profile_image,
             'followers_count' => $this->resource->followers_count,
-            'posts' => PublicPostResource::collection($this->whenLoaded('posts')),
         ];
     }
 }

@@ -8,14 +8,11 @@ use App\Models\Comment;
 
 class CommentRepository implements ICommentRepository
 {
-    public function getAllComments(): array
-    {
-        return Comment::all()->toArray();
-    }
-    public function getCommentById(int $commentId): ?Comment
+    public function getCommentById(int $comment_id): ?Comment
     {
         /** @var Comment|null $comment */
-        $comment = Comment::query()->find($commentId);
+
+        $comment = Comment::query()->find($comment_id);
 
         return $comment;
     }
@@ -39,11 +36,8 @@ class CommentRepository implements ICommentRepository
 
         return $comment;
     }
-    public function deleteComment(int $id): void
+    public function deleteComment(Comment $comment): void
     {
-        $comment = Comment::query()->find($id);
-        $comment?->delete();
+        $comment->delete();
     }
-
-
 }

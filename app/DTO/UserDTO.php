@@ -5,28 +5,28 @@ namespace App\DTO;
 class UserDTO
 {
     public function __construct(
-        private string $name,
-        private string $surname,
-        private ?string $email,
-        private string $password,
-        private ?string $profile_image = null,
-        private int $followers_count = 0
+        private readonly ?string $name,
+        private readonly ?string $surname,
+        private readonly ?string $email,
+        private readonly ?string $password,
+        private readonly ?string $profile_image = null,
+        private readonly int $followers_count = 0
     )
     {
 
     }
 
-    public function getName(): string
+    public function getName(): string|null
     {
         return $this->name;
     }
 
-    public function getSurname(): string
+    public function getSurname(): string|null
     {
         return $this->surname;
     }
 
-    public function getEmail(): string
+    public function getEmail(): string|null
     {
         return $this->email;
     }
@@ -52,12 +52,12 @@ class UserDTO
     public static function fromArray(array $data): static
     {
         return new static(
-            name: $data['name'],
-            surname: $data['surname'],
-            email: $data['email'],
-            password: $data['password'],
-            profile_image: $data['profile_image'],
-            followers_count: $data['followers_count']
+            name: $data['name'] ?? null,
+            surname: $data['surname'] ?? null,
+            email: $data['email'] ?? null,
+            password: $data['password'] ?? null,
+            profile_image: $data['profile_image'] ?? null,
+            followers_count: $data['followers_count'] ?? 0
         );
     }
 }

@@ -4,11 +4,13 @@ return [
     'status_success' => 'Success!',
     'status_failed' => 'Failed.',
     'invalid_credentials' => 'Invalid credentials.',
+    'registration_success' => 'Registration was successful!',
     'login_success' => 'User is logged in successfully!',
     'logout_success' => 'User is logged out successfully!',
     'record_deleted' => 'Record deletion was successful!',
     'record_not_found' => 'This record does not exist',
-    'unauthenticated' => 'Unauthenticated.',
+    'unauthorized' => 'Unauthenticated.',
+    'no_token_provided' => 'No token provided.',
     'token_expired' => 'Your token has expired. Please login again.',
 
     // for users
@@ -36,6 +38,8 @@ return [
     'post_image_deleted' => 'Post image deleted successfully!',
     'post_image_not_uploaded' => 'Post image not uploaded.',
     'post_image_not_deleted' => 'Post image not deleted.',
+    'unauthorized_post_edit' => 'You do not have permission to edit this post.',
+    'unauthorized_post_delete' => 'You do not have permission to delete this post.',
 
     // for followers
     'follower_created' => 'Follower added successfully!',

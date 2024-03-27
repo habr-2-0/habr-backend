@@ -2,9 +2,12 @@
 
 namespace App\Exceptions;
 
+use Carbon\Carbon;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -32,12 +35,40 @@ class Handler extends ExceptionHandler
 
     public function render($request, Throwable $e): JsonResponse
     {
+
         if ($e instanceof AuthenticationException) {
-            return response()->json([
-                'error' => __('messages.unauthenticated'),
-                'message' => __('messages.token_expired'),
-            ], 401);
+            if (Auth::check()) {
+                $user = Auth::user();
+
+                if ($user->token()) {
+                    $tokenExpiration = Carbon::parse($user->token()->expires_at);
+
+                    if ($tokenExpiration->isPast()) {
+                        return response()->json(
+                            [
+                                'error' => __('messages.token_expired')
+                            ],
+                            Response::HTTP_UNAUTHORIZED
+                        );
+                    }
+                } else {
+                    return response()->json(
+                        [
+                            'error' => __('messages.no_token_provided')
+                        ],
+                        Response::HTTP_UNAUTHORIZED
+                    );
+                }
+            } else {
+                return response()->json(
+                    [
+                        'error' => __('messages.unauthorized')
+                    ],
+                    Response::HTTP_UNAUTHORIZED
+                );
+            }
         }
+
 
         return parent::render($request, $e);
     }

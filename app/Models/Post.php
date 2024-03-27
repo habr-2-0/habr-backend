@@ -24,6 +24,7 @@ class Post extends Model
     use HasFactory;
 
     use HasFactory;
+    public $timestamps = true;
 
     /**
      * The attributes that are mass assignable.

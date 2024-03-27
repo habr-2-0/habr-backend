@@ -12,7 +12,6 @@ class ModelNotFoundException extends Exception
     {
         return response()->json([
             'error' => $this->getMessage(),
-            'code' => $this->getCode()
         ], Response::HTTP_NOT_FOUND);
     }
 }

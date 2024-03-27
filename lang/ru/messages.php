@@ -5,11 +5,13 @@ return [
     'status_success' => 'Успешно!',
     'status_failed' => 'Не удалось.',
     'invalid_credentials' => 'Неверные учетные данные.',
+    'registration_success' => 'Регистрация прошла успешно!',
     'login_success' => 'Пользователь успешно вошел в систему!',
     'logout_success' => 'Пользователь успешно вышел из системы!',
     'record_deleted' => 'Удаление записи прошло успешно!',
     'record_not_found' => 'Эта запись не существует.',
-    'unauthenticated' => 'Неавторизованный.',
+    'unauthorized' => 'Неавторизованный.',
+    'no_token_provided' => 'Токен не предоставлен.',
     'token_expired' => 'Ваш токен истек. Пожалуйста, выполните вход снова.',
 
     // for users
@@ -37,6 +39,8 @@ return [
     'post_image_deleted' => 'Изображение поста успешно удалено.',
     'post_image_not_uploaded' => 'Изображение поста не загружено.',
     'post_image_not_deleted' => 'Изображение поста не удалено.',
+    'unauthorized_post_edit' => 'У вас нет прав для редактирования этого поста.',
+    'unauthorized_post_delete' => 'У вас нет прав для удаления этого поста.',
 
     //for followers
     'follower_created' => 'Подписчик успешно добавлен!',
