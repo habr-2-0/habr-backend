@@ -14,14 +14,16 @@ interface IUserRepository
     public function getAllUsers(): Paginator;
 
     public function getUserById(int $userId): ?User;
+
     public function getUserWithPosts(int $userId): ?User;
 
     public function getUserPostById(int $userId, int $postId): ?Post;
+
     public function createUser(UserDTO $userDTO): ?User;
 
     public function updateUser(UserDTO $userDTO, User $user): ?User;
 
-    public function deleteUser(User $user): void;
+    function uploadProfileImage(User $user, string $path): User;
 
     public function getUserByEmail(string $email): ?User;
 }

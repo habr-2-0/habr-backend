@@ -10,6 +10,7 @@ use App\Exceptions\ModelNotFoundException;
 use App\Exceptions\ModelUpdationException;
 use App\Http\Requests\PostCommentsRequest;
 use App\Http\Requests\PostRequest;
+use App\Http\Requests\PostUpdateRequest;
 use App\Http\Resources\PostResource;
 use App\Http\Services\PostService;
 use App\Models\Post;
@@ -71,7 +72,7 @@ class PostController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * @param PostRequest $request
+     * @param PostUpdateRequest $request
      * @param PostService $service
      * @param int $id
      * @return PostResource
@@ -80,7 +81,7 @@ class PostController extends Controller
      * @throws BusinessException
      */
     public function update(
-        PostRequest $request,
+        PostUpdateRequest $request,
         PostService $service,
         int         $id
     ): PostResource

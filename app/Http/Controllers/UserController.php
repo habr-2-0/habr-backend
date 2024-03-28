@@ -6,6 +6,8 @@ use App\DTO\UserDTO;
 use App\Exceptions\ModelDeletionException;
 use App\Exceptions\ModelNotFoundException;
 use App\Exceptions\ModelUpdationException;
+use App\Http\Requests\UploadRequest;
+use App\Http\Requests\UserRegisterRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\PublicPostResource;
@@ -16,11 +18,13 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
+     * @param UserService $service
      * @return AnonymousResourceCollection
      */
     public function index(
@@ -70,21 +74,24 @@ class UserController extends Controller
         $service->update(UserDTO::fromArray($validated), $user->id);
     }
 
-
     /**
-     * Remove the specified resource from storage.
+     * @param UploadRequest $request
      * @param UserService $service
-     * @param int $id
      * @return JsonResponse
-     * @throws ModelDeletionException
      * @throws ModelNotFoundException
      */
-    public function destroy(
-        UserService $service,
-        int         $id
+    public function upload(
+        UploadRequest $request,
+        UserService $service
     ): JsonResponse
     {
-        return $service->delete($id);
+        $user_id = Auth::user()->id;
+
+        $profile_image = $request->file('profile_image');
+        $filePath = $profile_image->store('uploads', 'public');
+        $fullPath = Storage::url($filePath);
+
+        $service->upload($user_id, $fullPath);
     }
 
     /**

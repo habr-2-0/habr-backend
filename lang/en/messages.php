@@ -18,6 +18,7 @@ return [
     'user_updated' => 'User updated successfully!',
     'user_not_found' => 'User not found.',
     'user_email_already_exists' => 'The user with this email already exists.',
+    'user_image_uploaded' => 'User profile image uploaded successfully!',
 
     'user_type' => 'User ID must be integers.',
     'user_post_type' => 'User ID and post ID must be integers.',

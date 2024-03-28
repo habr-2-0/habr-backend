@@ -57,7 +57,7 @@ class UserRepository implements IUserRepository
         $user->surname = $userDTO->getSurname();
         $user->email = $userDTO->getEmail();
         $user->password = $userDTO->getPassword();
-        $user->profile_image = $userDTO->getProfileImage();
+        $user->profile_image = '';
         $user->followers_count = $userDTO->getFollowersCount();
         $user->save();
 
@@ -74,17 +74,17 @@ class UserRepository implements IUserRepository
             $user->surname = $userDTO->getSurname();
         }
 
-        if ($userDTO->getProfileImage()) {
-            $user->profile_image = $userDTO->getProfileImage();
-        }
         $user->save();
 
         return $user;
     }
 
-    public function deleteUser(User $user): void
+    public function uploadProfileImage(User $user, string $path): User
     {
-        $user->delete();
+        $user->profile_image = $path;
+        $user->save();
+
+        return $user;
     }
 
     public function getUserByEmail(string $email): ?User

@@ -36,11 +36,22 @@ class PostRepository implements IPostRepository
 
     public function updatePost(PostDTO $postDTO, Post $post): Post
     {
-        $post->title = $postDTO->getTitle();
-        $post->description = $postDTO->getDescription();
-        $post->status = $postDTO->getStatus();
-        $post->post_image = $postDTO->getPostImage();
-        $post->tags = $postDTO->getTags();
+
+        if ($postDTO->getTitle()) {
+            $post->title = $postDTO->getTitle();
+        }
+        if ($postDTO->getDescription()) {
+            $post->description = $postDTO->getDescription();
+        }
+        if ($postDTO->getStatus()) {
+            $post->status = $postDTO->getStatus();
+        }
+        if ($postDTO->getPostImage()) {
+            $post->post_image = $postDTO->getPostImage();
+        }
+        if ($postDTO->getTags()) {
+            $post->tags = $postDTO->getTags();
+        }
         $post->updated_at = Carbon::now();
         $post->save();
 

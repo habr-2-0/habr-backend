@@ -14,6 +14,9 @@ use Symfony\Component\HttpFoundation\Response;
 class FollowController extends Controller
 {
 
+    /**
+     * @return JsonResponse
+     */
     public function index(): JsonResponse
     {
         $follows = Follow::simplePaginate(15);
@@ -23,15 +26,26 @@ class FollowController extends Controller
         ]);
     }
 
+    /**
+     * @param FollowRequest $request
+     * @param CreateFollowService $service
+     * @return FollowResource
+     */
     public function store(FollowRequest $request, CreateFollowService $service): FollowResource
     {
         $validated = $request->validated();
 
-        $follow = $service->create(FollowDTO::fromArray($validated));
+        $follow = $service->follow(FollowDTO::fromArray($validated));
 
         return new FollowResource($follow);
     }
 
+    /**
+     * @param int $followId
+     * @param CreateFollowService $service
+     * @return JsonResponse|FollowResource
+     * @throws \App\Exceptions\BusinessException
+     */
     public function show(int $followId, CreateFollowService $service): JsonResponse|FollowResource
     {
         $follow = $service->show($followId);
@@ -39,17 +53,11 @@ class FollowController extends Controller
         return new FollowResource($follow);
     }
 
-    public function update(FollowRequest $request,CreateFollowService $service, int  $followId): JsonResponse
-    {
-        $validated = $request->validated();
-
-        $service->update(FollowDTO::fromArray($validated), $followId);
-
-        return response()->json([
-            'message' => __('messages.follow_updated')
-        ], Response::HTTP_OK);
-    }
-
+    /**
+     * @param int $followId
+     * @param CreateFollowService $service
+     * @return JsonResponse
+     */
     public function destroy(int $followId, CreateFollowService $service): JsonResponse
     {
         return $service->delete($followId);

@@ -33,12 +33,13 @@ Route::middleware(Localization::class)->group(callback: function () {
             Route::get('/users', 'index');
             Route::get('users/{id}', 'show');
             Route::put('users', 'update');
-            Route::delete('users', 'destroy');
+            Route::post('users/upload', 'upload');
         });
 
         //    User Posts Routes
         Route::get('users/{user_id}/posts', [UserController::class, 'getUserPosts']);
         Route::get('users/{user_id}/posts/{post_id}', [UserController::class, 'getUserPostById']);
+
 
         //    comments crud
         Route::get('comments', [CommentController::class, 'index']);

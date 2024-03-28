@@ -60,10 +60,10 @@ class UserService
 
     /**
      * @param int $id
-     * //     * @return User
+     * @return UserResource
      * @throws ModelNotFoundException
      */
-    public function show(int $id)
+    public function show(int $id): UserResource
     {
         $userWithId = $this->repository->getUserWithPosts($id);
 
@@ -83,7 +83,6 @@ class UserService
      */
     public function update(UserDTO $userDTO, int $user_id): User
     {
-
         $userWithId = $this->repository->getUserById($user_id);
 
         if ($userWithId === null) {
@@ -96,21 +95,26 @@ class UserService
     }
 
     /**
-     * @param int $id
-     * @return User|JsonResponse
-     * @throws ModelDeletionException
-     * @throws ModelNotFoundException
+     * @param int $user_id
+     * @param string $path
+     * @return JsonResponse
+     * @throws ModelUpdationException|ModelNotFoundException
      */
-    public function delete(int $id): User|JsonResponse
+    public function upload(int $user_id, string $path): JsonResponse
     {
-        $userWithId = $this->repository->getUserById($id);
+        $userWithId = $this->repository->getUserById($user_id);
 
         if ($userWithId === null) {
-            throw new ModelNotFoundException(__('messages.record_not_found'));
+            throw new ModelNotFoundException(__('messages.user_not_found'));
         }
 
-        $this->repository->deleteUser($userWithId);
-        throw new ModelDeletionException(__('messages.record_deleted'));
+        $this->repository->uploadProfileImage($userWithId, $path);
+
+        throw new ModelUpdationException(
+            __('messages.user_image_uploaded'),
+            0,
+            $userWithId
+        );
     }
 
     /**

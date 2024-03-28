@@ -9,7 +9,6 @@ class UserDTO
         private readonly ?string $surname,
         private readonly ?string $email,
         private readonly ?string $password,
-        private readonly ?string $profile_image = null,
         private readonly int $followers_count = 0
     )
     {
@@ -37,11 +36,6 @@ class UserDTO
         return $this->password;
     }
 
-    public function getProfileImage(): string|null
-    {
-        return $this->profile_image;
-    }
-
     public function getFollowersCount(): int
     {
         return $this->followers_count;
@@ -56,7 +50,6 @@ class UserDTO
             surname: $data['surname'] ?? null,
             email: $data['email'] ?? null,
             password: $data['password'] ?? null,
-            profile_image: $data['profile_image'] ?? null,
             followers_count: $data['followers_count'] ?? 0
         );
     }
