@@ -55,6 +55,11 @@ Route::middleware(Localization::class)->group(callback: function () {
         Route::post('posts', [PostController::class, 'store']);
         Route::put('posts/{id}', [PostController::class, 'update']);
 
+        //post files
+
+        Route::get('posts/files/{path}', [PostController::class, 'downloadFile'])
+            ->withoutMiddleware('auth:sanctum');
+
         //    Posts Comments Routes
         Route::get('posts/{post_id}/comments', [PostController::class, 'getPostComments']);
         Route::get('posts/{post_id}/comments/{comment_id}', [PostController::class, 'getPostCommentById']);

@@ -23,7 +23,7 @@ class PostResource extends JsonResource
             'status' => $this->resource->status,
             'tags' => $this->resource->tags,
             'views' => $this->resource->views,
-            'post_image' => $this->resource->post_image,
+            'post_files' => PostFileResource::collection($this->resource->whenLoaded('post_files')), // make PostFileResource
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
         ];

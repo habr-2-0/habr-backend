@@ -66,4 +66,9 @@ class Post extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function post_files(): HasMany
+    {
+        return $this->hasMany(PostFile::class);
+    }
 }

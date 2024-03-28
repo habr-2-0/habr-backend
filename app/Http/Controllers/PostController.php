@@ -45,7 +45,15 @@ class PostController extends Controller
         PostService $service
     ): PostResource
     {
+
+
+//        Auth::user();
         $validated = $request->validated();
+
+        // достаем массив $files = $request->input('files')
+
+        // нужно пройтись по foreach($files as $key => $file)
+        //
 
         $post = $service->create(PostDTO::fromArray($validated));
 
@@ -137,5 +145,21 @@ class PostController extends Controller
     ): JsonResponse|PostResource
     {
         return $service->getCommentById($post_id, $comment_id);
+    }
+
+
+    public function downloadFile(string $path)
+    {
+        $file = PostFile::query()
+            ->where('path', $path)->first();
+
+
+        if ($path === null) {
+            // throw exception
+        }
+
+        $fileContent = Storage::getFile($file->path); // точное название отправит Ойбек
+
+        return $fileContent;
     }
 }

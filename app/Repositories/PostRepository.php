@@ -14,7 +14,9 @@ class PostRepository implements IPostRepository
     {
         /** @var Post|null $post */
 
-        $post = Post::query()->find($post_id);
+        $post = Post::query()
+            ->with('post_files')
+            ->find($post_id);
 
         return $post;
     }
@@ -25,7 +27,7 @@ class PostRepository implements IPostRepository
         $post->user_id = Auth::user()->id;
         $post->title = $postDTO->getTitle();
         $post->description = $postDTO->getDescription();
-        $post->status = $postDTO->getStatus();
+        $post->status = $postDTO->getStatus();// замени
         $post->post_image = $postDTO->getPostImage();
         $post->tags = json_encode($postDTO->getTags());
         $post->views = 0;

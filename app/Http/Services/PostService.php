@@ -37,7 +37,25 @@ class PostService
      */
     public function create(PostDTO $postDTO): Post
     {
-        return $this->repository->createPost($postDTO);
+        $post = $this->repository->createPost($postDTO);
+
+        $files = $postDTO->files;
+
+        foreach($files as $key => $file) {
+
+            // идет сохранение файл в storage
+
+            $path = "some path";
+
+            $postFile = new PostFile();
+            $postFile->path = $path;
+            $postFile->key = $key;
+            $postFile->post_id = $post->id;
+
+            $postFile->save();
+        }
+
+        return $post;
     }
 
     /**

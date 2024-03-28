@@ -13,16 +13,13 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('title');
-            $table->text('description');
-            $table->string('status')->default('draft');
-            $table->json('tags')->nullable();
-            $table->integer('views')->default(0);
-            $table->timestamps();
+            $table->string("key"); //img1, img2, img3
+            $table->string("path"); // /storage/public/upload/bla-bla-bla-file.jpg
 
             //fk
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
+
+            $table->timestamps();
         });
     }
 
