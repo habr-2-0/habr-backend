@@ -3,18 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\DTO\UserDTO;
-use App\Exceptions\ModelDeletionException;
 use App\Exceptions\ModelNotFoundException;
 use App\Exceptions\ModelUpdationException;
 use App\Http\Requests\UploadRequest;
-use App\Http\Requests\UserRegisterRequest;
 use App\Http\Requests\UserUpdateRequest;
-use App\Http\Resources\PostResource;
+use App\Http\Resources\BaseUserResource;
 use App\Http\Resources\PublicPostResource;
 use App\Http\Resources\PublicUserResource;
-use App\Http\Resources\UserResource;
 use App\Http\Services\UserService;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
@@ -33,9 +29,8 @@ class UserController extends Controller
     {
         $users = $service->index();
 
-        return PublicUserResource::collection($users);
+        return BaseUserResource::collection($users);
     }
-
 
     /**
      * Display the specified resource.
@@ -79,6 +74,7 @@ class UserController extends Controller
      * @param UserService $service
      * @return JsonResponse
      * @throws ModelNotFoundException
+     * @throws ModelUpdationException
      */
     public function upload(
         UploadRequest $request,

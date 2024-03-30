@@ -3,46 +3,57 @@
 namespace App\Repositories;
 
 use App\Contracts\IFollowRepository;
-use App\DTO\FollowDTO;
 use App\Models\Follow;
+use App\Models\User;
+use Carbon\Carbon;
 
 class FollowRepository implements IFollowRepository
 {
-    public function getAllFollows(): array
-    {
-        return Follow::all()->toArray();
-    }
-
-    public function getFollowById(int $followId): ?Follow
-    {
-        /** @var Follow|null $follow */
-        $follow = Follow::query()->find($followId);
-
-        return $follow;
-    }
-
-    public function createFollow(FollowDTO $followDTO): Follow
+    public function createFollow($followerId, $followingId): Follow
     {
         $follow = new Follow();
-        $follow->follower_id = $followDTO->getFollowerId();
-        $follow->following_id = $followDTO->getFollowingId();
+        $follow->follower_id = $followerId;
+        $follow->following_id = $followingId;
+        $follow->date_followed = Carbon::now();
         $follow->save();
 
         return $follow;
     }
 
-    public function updateFollow(FollowDTO $followDTO, Follow $follow): Follow
+    public function deleteFollow($followerId, $followingId): void
     {
-        $follow->follower_id = $followDTO->getFollowerId();
-        $follow->following_id = $followDTO->getFollowingId();
-        $follow->save();
-
-        return $follow;
+        Follow::where('follower_id', $followerId)
+            ->where('following_id', $followingId)
+            ->delete();
     }
 
-    public function deleteFollow(int $id): void
+    public function getFollowById($followerId, $followingId): Follow|null
     {
-        $follow = Follow::query()->find($id);
-        $follow?->delete();
+        return Follow::where('follower_id', $followerId)
+            ->where('following_id', $followingId)
+            ->first();
+    }
+
+    public function incrementFollowersCount(User $user): void
+    {
+        $user->followers_count++;
+        $user->save();
+    }
+
+    public function decrementFollowersCount(User $user): void
+    {
+        $user->followers_count--;
+        $user->save();
+    }
+    public function incrementFollowingCount(User $user): void
+    {
+        $user->following_count++;
+        $user->save();
+    }
+
+    public function decrementFollowingCount(User $user): void
+    {
+        $user->following_count--;
+        $user->save();
     }
 }

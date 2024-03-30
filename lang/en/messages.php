@@ -43,10 +43,10 @@ return [
     'unauthorized_post_delete' => 'You do not have permission to delete this post.',
 
     // for followers
-    'follower_created' => 'Follower added successfully!',
-    'follower_deleted' => 'Follower deleted successfully!',
-    'follower_not_found' => 'Follower not found.',
-    'follower_already_exists' => 'Follower already exists.',
-    'follower_not_created' => 'Follower not created.',
-    'follower_not_deleted' => 'Follower not deleted.',
+    'followed_successfully' => 'You have successfully subscribed to this user!',
+    'unfollowed_successfully' => 'You have successfully unsubscribed to this user!',
+    'following_already_exists' => 'You are already subscribed to this user.',
+    'not_followed_before' => 'You are not subscribed to this user, so you cannot unsubscribe.',
+    'follow_yourself' => 'You cannot subscribe to yourself.',
+    'unfollow_yourself' => 'You cannot unsubscribe to yourself.',
 ];

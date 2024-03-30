@@ -44,10 +44,10 @@ return [
     'unauthorized_post_delete' => 'У вас нет прав для удаления этого поста.',
 
     //for followers
-    'follower_created' => 'Подписчик успешно добавлен!',
-    'follower_deleted' => 'Подписчик успешно удален!',
-    'follower_not_found' => 'Подписчик не найден.',
-    'follower_already_exists' => 'Подписчик уже существует.',
-    'follower_not_created' => 'Подписчик не создан.',
-    'follower_not_deleted' => 'Подписчик не удален.',
+    'followed_successfully' => 'Вы успешно подписались на этого пользователя!',
+    'unfollowed_successfully' => 'Вы успешно отписались от этого пользователя!',
+    'following_already_exists' => 'Вы уже подписаны на этого пользователя.',
+    'not_followed_before' => 'Вы не подписаны на этого пользователя, поэтому не можете отписаться.',
+    'follow_yourself' => 'Вы не можете подписаться на самого себя.',
+    'unfollow_yourself' => 'Вы не можете отписаться от самого себя.',
 ];

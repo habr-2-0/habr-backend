@@ -9,7 +9,8 @@ class UserDTO
         private readonly ?string $surname,
         private readonly ?string $email,
         private readonly ?string $password,
-        private readonly int $followers_count = 0
+        private readonly int $followers_count = 0,
+        private readonly int $following_count = 0
     )
     {
 
@@ -41,6 +42,11 @@ class UserDTO
         return $this->followers_count;
     }
 
+    public function getFollowingCount(): int
+    {
+        return $this->following_count;
+    }
+
 
 
     public static function fromArray(array $data): static
@@ -50,7 +56,8 @@ class UserDTO
             surname: $data['surname'] ?? null,
             email: $data['email'] ?? null,
             password: $data['password'] ?? null,
-            followers_count: $data['followers_count'] ?? 0
+            followers_count: $data['followers_count'] ?? 0,
+            following_count: $data['following_count'] ?? 0
         );
     }
 }

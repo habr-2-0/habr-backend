@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $follower_id
  * @property int $following_id
- * @property string $dateFollowed
+ * @property string $date_followed
  * @property User $follower
  * @property User $following
  */
@@ -27,7 +27,7 @@ class Follow extends Model
     protected $fillable = [
         'follower_id',
         'following_id',
-        'dateFollowed',
+        'date_followed',
     ];
 
     /**

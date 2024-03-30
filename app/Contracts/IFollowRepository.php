@@ -2,14 +2,17 @@
 
 namespace App\Contracts;
 
-use App\DTO\FollowDTO;
 use App\Models\Follow;
+use App\Models\User;
 
 interface IFollowRepository
 {
-    public function getAllFollows(): array;
-    public function getFollowById(int $followId): ?Follow;
-    public function createFollow(FollowDTO $followDTO): Follow;
-    public function updateFollow(FollowDTO $followDTO, Follow $follow): Follow;
-    public function deleteFollow(int $id): void;
+    public function getFollowById($followerId, $followingId): Follow|null;
+
+    public function createFollow($followerId, $followingId): Follow;
+
+    public function deleteFollow($followerId, $followingId): void;
+
+    public function incrementFollowersCount(User $user): void;
+    public function decrementFollowersCount(User $user): void;
 }

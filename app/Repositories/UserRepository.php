@@ -59,6 +59,7 @@ class UserRepository implements IUserRepository
         $user->password = $userDTO->getPassword();
         $user->profile_image = '';
         $user->followers_count = $userDTO->getFollowersCount();
+        $user->following_count = $userDTO->getFollowersCount();
         $user->save();
 
         return $user;

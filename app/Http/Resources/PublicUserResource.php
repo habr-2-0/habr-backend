@@ -21,6 +21,7 @@ class PublicUserResource extends JsonResource
             'email' => $this->resource->email,
             'profile_image' => $this->resource->profile_image,
             'followers_count' => $this->resource->followers_count,
+            'following_count' => $this->resource->following_count,
             'posts' => PublicPostResource::collection($this->whenLoaded('posts')),
         ];
     }

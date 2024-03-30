@@ -14,8 +14,10 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('follower_id');
             $table->unsignedBigInteger('following_id');
-            $table->timestamp('dateFollowed');
-            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamp('date_followed');
+
+            $table->unique(['follower_id', 'following_id']);
+            $table->unique(['following_id', 'follower_id']);
 
             //index
             $table->index('follower_id');

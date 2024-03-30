@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('profile_image')->nullable();
             $table->unsignedInteger('followers_count')->default(0);
+            $table->unsignedInteger('following_count')->default(0);
             $table->timestamps();
         });
     }

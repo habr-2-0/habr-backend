@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
@@ -57,13 +58,22 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
-    public function followers(): HasMany
-    {
-        return $this->hasMany(Follow::class, 'following_id');
-    }
+//    public function followers(): HasMany
+//    {
+//        return $this->hasMany(Follow::class, 'following_id');
+//    }
+//
+//    public function following(): HasMany
+//    {
+//        return $this->hasMany(Follow::class, 'follower_id');
+//    }
 
-    public function following(): HasMany
+    public function following(): BelongsToMany
     {
-        return $this->hasMany(Follow::class, 'follower_id');
+        return $this->belongsToMany(User::class, 'follows', 'follower_id', 'following_id');
+    }
+    public function follower(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'follows', 'following_id', 'follower_id');
     }
 }

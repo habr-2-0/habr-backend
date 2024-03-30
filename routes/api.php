@@ -60,11 +60,10 @@ Route::middleware(Localization::class)->group(callback: function () {
         Route::get('posts/{post_id}/comments/{comment_id}', [PostController::class, 'getPostCommentById']);
 
         // follows crud
-        Route::get('follows', [FollowController::class, 'index']);
-        Route::get('follows/{id}', [FollowController::class, 'show']);
         Route::delete('follows/{id}', [FollowController::class, 'destroy']);
-        Route::post('follows', [FollowController::class, 'store']);
-        Route::put('follows/{id}', [FollowController::class, 'update']);
+        Route::post('follows/{id}', [FollowController::class, 'store']);
+        Route::get('follows/followings/{id}', [FollowController::class, 'getUserFollowings']);
+        Route::get('follows/followers/{id}', [FollowController::class, 'getUserFollowers']);
     });
 
 });
