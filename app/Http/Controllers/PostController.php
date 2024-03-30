@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Contracts\IPostRepository;
 use App\DTO\PostDTO;
 use App\Exceptions\BusinessException;
-use App\Exceptions\ModelDeletionException;
 use App\Exceptions\ModelNotFoundException;
-use App\Exceptions\ModelUpdationException;
-use App\Http\Requests\PostCommentsRequest;
 use App\Http\Requests\PostRequest;
 use App\Http\Requests\PostUpdateRequest;
 use App\Http\Resources\PostResource;
@@ -16,7 +12,6 @@ use App\Http\Services\PostService;
 use App\Models\Post;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Response;
 
 class PostController extends Controller
 {
@@ -77,7 +72,6 @@ class PostController extends Controller
      * @param int $id
      * @return PostResource
      * @throws ModelNotFoundException
-     * @throws ModelUpdationException
      * @throws BusinessException
      */
     public function update(
@@ -97,7 +91,7 @@ class PostController extends Controller
      * @param int $id
      * @return JsonResponse|Post
      * @throws ModelNotFoundException
-     * @throws ModelDeletionException|BusinessException
+     * @throws BusinessException
      */
     public function destroy(
         PostService $service,

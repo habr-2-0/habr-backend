@@ -4,12 +4,11 @@ namespace App\Http\Services;
 
 use App\Contracts\ICommentRepository;
 use App\DTO\CommentDTO;
-use App\Exceptions\ModelDeletionException;
 use App\Exceptions\ModelNotFoundException;
-use App\Exceptions\ModelUpdationException;
 use App\Models\Comment;
 use App\Repositories\CommentRepository;
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class CommentService
 {
@@ -54,10 +53,10 @@ class CommentService
     /**
      * @param CommentDTO $commentDTO
      * @param int $commentId
-     * @return Comment
-     * @throws ModelNotFoundException|ModelUpdationException
+     * @return JsonResponse
+     * @throws ModelNotFoundException
      */
-    public function update(CommentDTO $commentDTO, int $commentId): Comment
+    public function update(CommentDTO $commentDTO, int $commentId): JsonResponse
 
     {
         $commentWithId = $this->commentRepository->getCommentById($commentId);
@@ -67,13 +66,17 @@ class CommentService
         }
 
         $data = $this->commentRepository->updateComment($commentDTO, $commentWithId);
-        throw new ModelUpdationException(__('messages.comment_updated'), 0, $data);
+
+        return response()->json([
+            'message' => __('messages.comment_updated'),
+            'data' => $data,
+        ], Response::HTTP_OK);
     }
 
     /**
      * @param int $id
      * @return Comment|JsonResponse
-     * @throws ModelNotFoundException|ModelDeletionException
+     * @throws ModelNotFoundException
      */
     public function delete(int $id): Comment|JsonResponse
 
@@ -85,6 +88,9 @@ class CommentService
         }
 
         $this->commentRepository->deleteComment($commentWithId);
-        throw new ModelDeletionException(__('messages.record_deleted'));
+
+        return response()->json([
+            'message' => __('messages.record_deleted'),
+        ], Response::HTTP_OK);
     }
 }

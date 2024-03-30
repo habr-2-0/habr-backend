@@ -5,11 +5,8 @@ namespace App\Http\Services;
 use App\Contracts\IUserRepository;
 use App\DTO\UserDTO;
 use App\Exceptions\DuplicateEntryException;
-use App\Exceptions\ModelDeletionException;
 use App\Exceptions\ModelNotFoundException;
-use App\Exceptions\ModelUpdationException;
 use App\Http\Resources\BaseUserResource;
-use App\Http\Resources\PostResource;
 use App\Http\Resources\PublicPostResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -17,7 +14,7 @@ use App\Repositories\UserRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserService
 {
@@ -77,11 +74,10 @@ class UserService
     /**
      * @param UserDTO $userDTO
      * @param int $user_id
-     * @return User
+     * @return JsonResponse
      * @throws ModelNotFoundException
-     * @throws ModelUpdationException
      */
-    public function update(UserDTO $userDTO, int $user_id): User
+    public function update(UserDTO $userDTO, int $user_id): JsonResponse
     {
         $userWithId = $this->repository->getUserById($user_id);
 
@@ -91,14 +87,17 @@ class UserService
 
         $data = new BaseUserResource($this->repository->updateUser($userDTO, $userWithId));
 
-        throw new ModelUpdationException(__('messages.user_updated'), 0, $data);
+        return response()->json([
+            'message' => __('messages.user_updated'),
+            'data' => $data,
+        ], Response::HTTP_OK);
     }
 
     /**
      * @param int $user_id
      * @param string $path
      * @return JsonResponse
-     * @throws ModelUpdationException|ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function upload(int $user_id, string $path): JsonResponse
     {
@@ -110,11 +109,10 @@ class UserService
 
         $this->repository->uploadProfileImage($userWithId, $path);
 
-        throw new ModelUpdationException(
-            __('messages.user_image_uploaded'),
-            0,
-            $userWithId
-        );
+        return response()->json([
+            'message' =>  __('messages.user_image_uploaded'),
+            'data' => $userWithId,
+        ], Response::HTTP_OK);
     }
 
     /**

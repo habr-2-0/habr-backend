@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\DTO\UserDTO;
 use App\Exceptions\ModelNotFoundException;
-use App\Exceptions\ModelUpdationException;
 use App\Http\Requests\UploadRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\BaseUserResource;
@@ -55,7 +54,7 @@ class UserController extends Controller
      * @param UserUpdateRequest $request
      * @param UserService $service
      * @return JsonResponse
-     * @throws ModelUpdationException|ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function update(
         UserUpdateRequest $request,
@@ -74,7 +73,6 @@ class UserController extends Controller
      * @param UserService $service
      * @return JsonResponse
      * @throws ModelNotFoundException
-     * @throws ModelUpdationException
      */
     public function upload(
         UploadRequest $request,

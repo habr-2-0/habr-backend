@@ -5,9 +5,7 @@ namespace App\Http\Services;
 use App\Contracts\IPostRepository;
 use App\DTO\PostDTO;
 use App\Exceptions\BusinessException;
-use App\Exceptions\ModelDeletionException;
 use App\Exceptions\ModelNotFoundException;
-use App\Exceptions\ModelUpdationException;
 use App\Http\Resources\CommentResource;
 use App\Models\Post;
 use App\Repositories\PostRepository;
@@ -63,12 +61,11 @@ class PostService
     /**
      * @param PostDTO $postDTO
      * @param int $id
-     * @return Post
+     * @return JsonResponse
      * @throws BusinessException
      * @throws ModelNotFoundException
-     * @throws ModelUpdationException
      */
-    public function update(PostDTO $postDTO, int $id): Post
+    public function update(PostDTO $postDTO, int $id): JsonResponse
     {
         $postWithId = $this->repository->getPostById($id);
 
@@ -84,13 +81,16 @@ class PostService
         }
 
         $data = $this->repository->updatePost($postDTO, $postWithId);
-        throw new ModelUpdationException(__('messages.post_updated'), 0, $data);
+
+        return response()->json([
+            'message' => __('messages.post_updated'),
+            'data' => $data,
+        ], Response::HTTP_OK);
     }
 
     /**
      * @param int $id
      * @return Post|JsonResponse
-     * @throws ModelDeletionException
      * @throws ModelNotFoundException|BusinessException
      */
     public function delete(int $id): Post|JsonResponse
@@ -109,7 +109,9 @@ class PostService
         }
 
         $this->repository->deletePost($postWithId);
-        throw new ModelDeletionException(__('messages.record_deleted'));
+        return response()->json([
+            'message' => __('messages.record_deleted'),
+        ], Response::HTTP_OK);
     }
 
     /**
