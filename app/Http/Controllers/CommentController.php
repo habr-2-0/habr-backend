@@ -6,92 +6,111 @@ use App\DTO\CommentDTO;
 use App\Exceptions\BusinessException;
 use App\Exceptions\ModelNotFoundException;
 use App\Http\Requests\CommentRequest;
+use App\Http\Resources\BaseCommentResource;
 use App\Http\Resources\CommentResource;
+use App\Http\Resources\PublicCommentResource;
 use App\Http\Services\CommentService;
 use App\Models\Comment;
+use http\Env\Request;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 
 class CommentController extends Controller
 {
     /**
-     * @return JsonResponse
-     */
-    public function index(): JsonResponse
-    {
-        $comments = Comment::simplePaginate(15);
-
-        return response()->json([
-            'data' => $comments
-        ]);
-    }
-
-    /**
      * Store a newly created resource in storage.С
      * @param CommentRequest $request
+     * @param int $post_id
      * @param CommentService $service
-     * @return CommentResource
-     */
-    public function store(
-        CommentRequest       $request,
-        CommentService $service
-    ): CommentResource
-    {
-        $validated = $request->validated();
-
-        $comment = $service->create(CommentDTO::fromArray($validated));
-
-        return new CommentResource($comment);
-    }
-
-    /**
-     * Display the specified resource.
-     * @param int $id
-     * @param CommentService $service
-     * @return CommentResource|JsonResponse
+     * @return JsonResponse
      * @throws ModelNotFoundException
      */
-    public function show(
-        int                  $id,
+    public function store(
+        FormRequest    $request,
+        int            $post_id,
         CommentService $service
-    ): CommentResource|JsonResponse
+    ): JsonResponse
     {
-        $comment = $service->show($id);
+        $user_id = Auth::user()->id;
 
-        return new CommentResource($comment);
+        $validated = $request->validate([
+            'description' => 'required|string'
+        ]);
+
+        $data = $validated['description'];
+
+        return $service->create($user_id, $post_id, $data);
     }
 
     /**
      * Update the specified resource in storage.
      * @param CommentRequest $request
      * @param CommentService $service
-     * @param int $id
      * @return JsonResponse
      * @throws ModelNotFoundException
      */
     public function update(
         CommentRequest $request,
         CommentService $service,
-        int            $id
     ): JsonResponse
     {
         $validated = $request->validated();
 
-        $service->update(CommentDTO::fromArray($validated), $id);
+        $data = CommentDTO::fromArray($validated);
+
+        return $service->update($data);
     }
+
 
     /**
      * Remove the specified resource from storage.
      * @param int $comment_id
      * @param CommentService $service
      * @return JsonResponse
+     * @throws ModelNotFoundException
      */
     public function destroy(
-        int                  $id,
+        int            $comment_id,
         CommentService $service
     ): JsonResponse
     {
-        return $service->delete($id);
+        $user_id = Auth::user()->id;
+
+        return $service->delete($user_id, $comment_id);
+    }
+
+
+    /**
+     * @param int $post_id
+     * @param CommentService $service
+     * @return AnonymousResourceCollection
+     * @throws ModelNotFoundException
+     */
+    public function getUserPostComments(
+        int            $post_id,
+        CommentService $service
+    ): AnonymousResourceCollection
+    {
+        $user_id = Auth::user()->id;
+
+        return BaseCommentResource::collection($service->getUserPostComments($user_id, $post_id));
+    }
+
+    /**
+     * @param int $post_id
+     * @param CommentService $service
+     * @return AnonymousResourceCollection
+     * @throws ModelNotFoundException
+     */
+    public function getPostComments(
+        int            $post_id,
+        CommentService $service
+    ): AnonymousResourceCollection
+    {
+        return PublicCommentResource::collection($service->getPostComments($post_id));
     }
 }

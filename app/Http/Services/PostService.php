@@ -31,11 +31,16 @@ class PostService
 
     /**
      * @param PostDTO $postDTO
-     * @return Post
+     * @return JsonResponse
      */
-    public function create(PostDTO $postDTO): Post
+    public function create(PostDTO $postDTO): JsonResponse
     {
-        return $this->repository->createPost($postDTO);
+        $data = $this->repository->createPost($postDTO);
+
+        return response()->json([
+            'message' => __('messages.comment_created'),
+            'data' => new CommentResource($data),
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -47,12 +52,12 @@ class PostService
     {
         $postWithId = $this->repository->getPostById($id);
 
-        if (Auth::user()->id !== $postWithId->user_id) {
-            $this->repository->incrementPostViews($postWithId);
-        }
-
         if ($postWithId === null) {
             throw new ModelNotFoundException(__('messages.post_not_found'));
+        }
+
+        if (Auth::user()->id !== $postWithId->user_id) {
+            $this->repository->incrementPostViews($postWithId);
         }
 
         return $postWithId;
@@ -112,56 +117,6 @@ class PostService
         return response()->json([
             'message' => __('messages.record_deleted'),
         ], Response::HTTP_OK);
-    }
-
-    /**
-     * @param int $post_id
-     * @return JsonResponse|AnonymousResourceCollection
-     * @throws ModelNotFoundException
-     */
-    public function getComments(
-        int $post_id
-    ): JsonResponse|AnonymousResourceCollection
-    {
-        /** @var Post|null $postWithId */
-        $postWithId = $this->repository->getPostById($post_id);
-
-        if ($postWithId === null) {
-            throw new ModelNotFoundException(__('messages.post_not_found'));
-        }
-
-        $comments = $postWithId->comments;
-
-        return CommentResource::collection($comments);
-    }
-
-    /**
-     * @param int $post_id
-     * @param int $comment_id
-     * @return JsonResponse|CommentResource
-     * @throws ModelNotFoundException
-     */
-    public function getCommentById(
-        int $post_id,
-        int $comment_id,
-    ): JsonResponse|CommentResource
-    {
-        /** @var Post|null $postWithId */
-        $postWithId = $this->repository->getPostById($post_id);
-
-        if ($postWithId === null) {
-            throw new ModelNotFoundException(__('messages.post_not_found'));
-        }
-
-        $comments = $postWithId->comments;
-
-        $comment = $comments->where('id', $comment_id)->first();
-
-        if ($comment === null) {
-            throw new ModelNotFoundException(__('messages.comment_not_found'));
-        }
-
-        return new CommentResource($comment);
     }
 }
 

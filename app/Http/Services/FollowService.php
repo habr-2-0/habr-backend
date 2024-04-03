@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Contracts\IFollowRepository;
+use App\Contracts\IUserRepository;
 use App\Exceptions\BusinessException;
 use App\Exceptions\DuplicateEntryException;
 use App\Exceptions\ModelNotFoundException;
@@ -18,8 +19,10 @@ class FollowService
 {
     /**
      * @var FollowRepository|IFollowRepository
+     * @var UserRepository|IUserRepository
      */
     private IFollowRepository|FollowRepository $follow_repository;
+    private IUserRepository|UserRepository $user_repository;
 
     /**
      *
@@ -27,7 +30,7 @@ class FollowService
     public function __construct()
     {
         $this->follow_repository = new FollowRepository();
-        $this->user_epository = new UserRepository();
+        $this->user_repository = new UserRepository();
     }
 
 
@@ -47,7 +50,7 @@ class FollowService
             );
         }
 
-        $userWithId = $this->user_epository->getUserById($following_id);
+        $userWithId = $this->user_repository->getUserById($following_id);
 
         if ($userWithId === null) {
             throw new ModelNotFoundException(__('messages.user_not_found'));
@@ -83,7 +86,7 @@ class FollowService
             );
         }
 
-        $userWithId = $this->user_epository->getUserById($following_id);
+        $userWithId = $this->user_repository->getUserById($following_id);
 
         if ($userWithId === null) {
             throw new ModelNotFoundException(__('messages.user_not_found'));
@@ -112,7 +115,7 @@ class FollowService
      */
     public function getFollowings(int $user_id): AnonymousResourceCollection
     {
-        $userWithId = $this->user_epository->getUserById($user_id);
+        $userWithId = $this->user_repository->getUserById($user_id);
 
         if ($userWithId === null) {
             throw new ModelNotFoundException(__('messages.user_not_found'));
@@ -128,7 +131,7 @@ class FollowService
      */
     public function getFollowers(int $user_id): AnonymousResourceCollection
     {
-        $userWithId = $this->user_epository->getUserById($user_id);
+        $userWithId = $this->user_repository->getUserById($user_id);
 
         if ($userWithId === null) {
             throw new ModelNotFoundException(__('messages.user_not_found'));

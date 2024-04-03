@@ -5,12 +5,12 @@ namespace App\DTO;
 class CommentDTO
 {
     /**
-     * @param int $user_id
+     * @param int $comment_id
      * @param int $post_id
      * @param string $description
      */
     public function __construct(
-        private readonly int $user_id,
+        private readonly int $comment_id,
         private readonly int $post_id,
         private readonly string $description
 
@@ -18,9 +18,9 @@ class CommentDTO
 
     }
 
-    public function getUserId(): int
+    public function getCommentId(): int
     {
-        return $this->user_id;
+        return $this->comment_id;
     }
     public function getPostId(): int
     {
@@ -34,7 +34,7 @@ class CommentDTO
     public static function fromArray(array $data): static
     {
         return new static(
-            user_id: $data['user_id'],
+            comment_id: $data['comment_id'],
             post_id: $data['post_id'],
             description: $data['description'],
         );

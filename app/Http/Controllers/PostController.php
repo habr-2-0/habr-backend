@@ -33,18 +33,17 @@ class PostController extends Controller
      * Store a newly created resource in storage.
      * @param PostRequest $request
      * @param PostService $service
-     * @return PostResource
+     * @return JsonResponse
      */
     public function store(
         PostRequest $request,
         PostService $service
-    ): PostResource
+    ): JsonResponse
     {
         $validated = $request->validated();
 
-        $post = $service->create(PostDTO::fromArray($validated));
+        return $service->create(PostDTO::fromArray($validated));
 
-        return new PostResource($post);
     }
 
     /**

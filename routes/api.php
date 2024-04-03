@@ -40,13 +40,18 @@ Route::middleware(Localization::class)->group(callback: function () {
         Route::get('users/{user_id}/posts', [UserController::class, 'getUserPosts']);
         Route::get('users/{user_id}/posts/{post_id}', [UserController::class, 'getUserPostById']);
 
+        Route::get('user/posts/{post_id}/comments', [CommentController::class, 'getUserPostComments']);
+        Route::get('posts/{post_id}/comments', [CommentController::class, 'getPostComments']);
+
 
         //    comments crud
         Route::get('comments', [CommentController::class, 'index']);
+        Route::post('comments/{id}', [CommentController::class, 'store']);
+        Route::put('comments', [CommentController::class, 'update']);
+
+
         Route::get('comments/{id}', [CommentController::class, 'show']);
         Route::delete('comments/{id}', [CommentController::class, 'destroy']);
-        Route::post('comments', [CommentController::class, 'store']);
-        Route::put('comments/{id}', [CommentController::class, 'update']);
 
         // posts crud
         Route::get('posts', [PostController::class, 'index']);
@@ -54,10 +59,6 @@ Route::middleware(Localization::class)->group(callback: function () {
         Route::delete('posts/{id}', [PostController::class, 'destroy']);
         Route::post('posts', [PostController::class, 'store']);
         Route::put('posts/{id}', [PostController::class, 'update']);
-
-        //    Posts Comments Routes
-        Route::get('posts/{post_id}/comments', [PostController::class, 'getPostComments']);
-        Route::get('posts/{post_id}/comments/{comment_id}', [PostController::class, 'getPostCommentById']);
 
         // follows crud
         Route::delete('follows/{id}', [FollowController::class, 'destroy']);

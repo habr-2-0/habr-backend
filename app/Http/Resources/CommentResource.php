@@ -19,8 +19,8 @@ class CommentResource extends JsonResource
             'id' =>$this->resource->id,
             'user_id' =>$this->resource->user_id,
             'post_id' =>$this->resource->post_id,
-            'description' => $this->resource->description
-
+            'description' => $this->resource->description,
+            'updated_at' => $this->resource->updated_at
         ];
     }
 }
